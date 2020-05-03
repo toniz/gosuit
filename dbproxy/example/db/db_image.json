@@ -1,0 +1,23 @@
+[
+    {
+        "ident": "db_image_w",
+        "balancer" : "BAL_DB_IMAGE_W",
+        "db" : "ibbwhat",
+        "user" : "ibbwhat",
+        "password" : "123456",
+        "endpoint" : "10.107.152.167:3306",
+        "encoding" : "utf8,utf8mb4",
+        "connection" : {
+        }
+    },
+    {
+        "ident": "db_image_r",
+        "balancer" : "BAL_DB_IMAGE_R",
+        "db" : "ibbwhat",
+        "user" : "ibbwhat",
+        "password" : "123456",
+        "endpoint" : "10.107.152.167:3306",
+        "encoding" : "utf8,utf8mb4"
+    }
+]
+

@@ -1,0 +1,31 @@
+{
+    "STORAGE_t_storage_sync_insert" :
+    {
+        "sql" : "INSERT IGNORE INTO t_storage_sync(src_owner, src_bucket, src_prefix, src_name, tag_owner, tag_bucket, tag_prefix, tag_name, update_time, create_time, status, retry) VALUES($srcOwner$, $srcBucket$, $srcPrefix$, $srcName$, $tagOwner$, $tagBucket$, $tagPrefix$, $tagName$, NOW(), NOW(), 0, 0);",
+        "db" : "db_annotate_manage_w"
+    },
+    "STORAGE_t_storage_sync_update_status" :
+    {
+        "sql" : "UPDATE t_storage_sync SET status = $status$ WHERE tag_owner=$tagOwner$ AND tag_bucket=$tagBucket$ AND tag_prefix=$tagPrefix$ AND tag_name=$tagName$;",
+        "db" : "db_annotate_manage_w"
+    },
+    "STORAGE_t_storage_sync_update_status" :
+    {
+        "sql" : "UPDATE t_storage_sync SET retry = retry+1 WHERE tag_owner=$tagOwner$ AND tag_bucket=$tagBucket$ AND tag_prefix=$tagPrefix$ AND tag_name=$tagName$;",
+        "db" : "db_annotate_manage_w"
+    },
+    "STORAGE_t_storage_sync_insert_multi" :
+    {
+        "sql" : "INSERT IGNORE INTO t_storage_sync(src_owner, src_bucket, src_prefix, src_name, tag_owner, tag_bucket, tag_prefix, tag_name, update_time, create_time, status, retry) VALUES $values$",
+        "noquote": {"values":""},
+        "noescape":{"values":""},
+        "check":   {"values": "^.*$"},
+        "db" : "db_annotate_manage_w"
+    },
+    "STORAGE_t_storage_sync_select_unsync" :
+    {
+        "sql" : "SELECT src_owner, src_bucket, src_prefix, src_name, tag_owner, tag_bucket, tag_prefix, tag_name WHERE status=0 AND retry<3 LIMIT 1000;",
+        "db" : "db_annotate_manage_w"
+    }
+}
+

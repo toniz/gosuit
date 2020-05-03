@@ -1,0 +1,31 @@
+[
+    {
+        "ident": "db_account_w",
+        "driver": "mysql",
+        "db" : "ibbwhat",
+        "user" : "ibbwhat",
+        "password" : "123456",
+        "endpoint" : "10.107.152.167:3306",
+        "encoding" : "utf8,utf8mb4a",
+        "connection" : {
+            "maxcount" : 100,
+            "lifetime" : 3600,
+            "timeout" : 5
+        }
+    },
+    {
+        "ident" : "db_account_r",
+        "driver": "mysql",
+        "db" : "ibbwhat",
+        "user" : "ibbwhat",
+        "password" : "123456",
+        "endpoint" : "10.107.152.167:3306",
+        "encoding" : "utf8,utf8mb4",
+        "connection" : {
+            "maxcount" : 100,
+            "lifetime" : 3600,
+            "timeout" : 5         
+        }
+    }
+]
+

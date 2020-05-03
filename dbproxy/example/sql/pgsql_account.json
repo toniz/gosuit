@@ -1,0 +1,42 @@
+[
+    {
+        "ident":"pg_user_insert",
+        "sql" : "INSERT INTO t_user(Fuser_id, Fname, Frole_group) VALUES($id$, $name$ ,$group$);",
+        "noquote": {"id":""},
+        "check":   {"id": "^\\d+$"},
+        "db" : "pg_account_w"
+    },
+    {
+        "ident": "pg_user_select_by_uid",
+        "sql" : "SELECT user_id, user_name, type FROM t_user WHERE user_id>=$limit_start$ ORDER BY user_id ASC LIMIT $limit_end$ ;",
+        "noquote" : {"limit_start":"", "limit_end":""},
+        "db" : "pg_account_r"
+    },
+    {
+        "ident":"pg_user_select_by_uids",
+        "sql" : "SELECT Fuser_id, Fname, Frole_group FROM t_user WHERE Fuser_id in ($condition$)",
+        "noquote": {"condition":""},
+        "noescape":{"condition":""},
+        "check": {"condition": "^.*$"},
+        "db" : "pg_account_w"
+    },
+    {
+        "ident":"pg_user_insert_transaction",
+	"sqlgroup": 
+	[
+            {
+		"sql" : "INSERT INTO t_user(Fuser_id, Fname, Frole_group) VALUES($id$, $name$ ,$group$);",
+		"noquote": {"id":""},
+		"check":   {"id": "^\\d+$"},
+		"db" : "pg_account_w"
+            },
+            { 
+		"sql" : "INSERT INTO t_user(Fuser_id, Fname, Frole_group) VALUES($id$, $name$ ,$group$);",
+		"noquote": {"id":""},
+		"check":   {"id": "^\\d+$"},
+		"db" : "pg_account_w"
+            }
+	]
+    }
+]
+

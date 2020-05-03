@@ -1,0 +1,18 @@
+[
+    {
+        "ident": "db_account_0",
+        "name" : "ibbwhat",
+        "user" : "ibbwhat",
+        "password" : "123456",
+        "endpoint" : "10.107.152.167:3306",
+        "encoding" : "utf8,utf8mb4"
+    },
+    {
+        "ident": "db_account_1",
+        "name" : "ibbwhat",
+        "user" : "ibbwhat",
+        "password" : "123456",
+        "endpoint" : "10.107.152.167:3306",
+        "encoding" : "utf8,utf8mb4"
+    }
+]
