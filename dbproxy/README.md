@@ -1,7 +1,7 @@
 ## 简介
-从我的上一个GO项目：https://github.com/toniz/gudp 修改过来的。
-这是一个数据库访问代理．目前支持mysql. pgsql. 很容易就能添加其它数据源支持.
-只需要使用SQLID调用,无需关心数据库连接和查询细节.满足大部分的数据服务需求,并且追求简单,轻量化以及扩展性.使用GO语言编码.
+从我的上一个GO项目：https://github.com/toniz/gudp 修改过来的。  
+这是一个数据库访问代理．目前支持mysql. pgsql. 很容易就能添加其它数据源支持.  
+只需要使用SQLID调用,无需关心数据库连接和查询细节.满足大部分的数据服务需求,并且追求简单,轻量化以及扩展性.使用GO语言编码.  
 
 ## 特性:
 * 使得数据访问统一化
@@ -20,56 +20,56 @@
 ## 数据流图
 ![测试](../doc/uml/uml.png)
 
-* 调用方法是: 传递sql_id和参数,参数是一个map.
+* 调用方法是: 传递sql_id和参数,参数是一个map.  
 ```
-    mds := NewMysqlDataService()
-    mds.Cfg.DBPath = "./config/db/"
-    mds.Cfg.SqlPath = "./config/sql/"
-    err := mds.InitMysqlConnection()
-    if err != nil {
-        log.Fatalf("Connect To Mysql Failed:", err)
-    }
+mds := NewMysqlDataService()
+mds.Cfg.DBPath = "./config/db/"
+mds.Cfg.SqlPath = "./config/sql/"
+err := mds.InitMysqlConnection()
+if err != nil {
+    log.Fatalf("Connect To Mysql Failed:", err)
+}
 
-    ident = "t_user_select_by_uid"
-    params = map[string]string{
-        "limit_start": "100",
-        "limit_end": "10"
-    }
-    res, err := mds.AutoCommit(context.TODO(), ident, params)
-    if err != nil {
-        log.Printf("Select? From DB Failed: %v", err)
-    }
+ident = "t_user_select_by_uid"
+params = map[string]string{
+    "limit_start": "100",
+    "limit_end": "10"
+}
+res, err := mds.AutoCommit(context.TODO(), ident, params)
+if err != nil {
+    log.Printf("Select? From DB Failed: %v", err)
+}
 ```
 
-* 在./config/sql/目录下找到对应的sql语句:
+* 在./config/sql/目录下找到对应的sql语句:   
 ···
-    {
-        "ident": "t_user_select_by_uid",
-        "sql" : "SELECT user_id, user_name, type FROM t_user WHERE user_id>=$limit_start$ ORDER BY user_id ASC LIMIT $limit_end$ ;",
-        "noquote" : {"limit_start":"", "limit_end":""},
-        "db" : "db_account_r"
-    }
+{
+    "ident": "t_user_select_by_uid",
+    "sql" : "SELECT user_id, user_name, type FROM t_user WHERE user_id>=$limit_start$ ORDER BY user_id ASC LIMIT $limit_end$ ;",
+    "noquote" : {"limit_start":"", "limit_end":""},
+    "db" : "db_account_r"
+}
 ···  
 
-* 在./config/db/目录下找到DB:db_account_r对应的数据库配置：
+* 在./config/db/目录下找到DB:db_account_r对应的数据库配置：  
 ···
-    {
-        "ident" : "db_account_r",
-        "driver": "mysql",
-        "db" : "ibbwhat",
-        "user" : "ibbwhat",
-        "password" : "123456",
-        "endpoint" : "10.107.152.167:3306",
-        "encoding" : "utf8,utf8mb4",
-        "connection" : {
-            "maxcount" : 100,
-            "lifetime" : 3600,
-            "timeout" : 5
-        }
+{
+    "ident" : "db_account_r",
+    "driver": "mysql",
+    "db" : "ibbwhat",
+    "user" : "ibbwhat",
+    "password" : "123456",
+    "endpoint" : "10.107.152.167:3306",
+    "encoding" : "utf8,utf8mb4",
+    "connection" : {
+        "maxcount" : 100,
+        "lifetime" : 3600,
+        "timeout" : 5
     }
+}
 ···
 
-* 所以上面的调用如下:
+* 所以上面的调用如下:   
 ```
 Connect To: 127.0.0.1 4000 
 Execute This Sql:
@@ -77,7 +77,7 @@ SELECT user_id, user_name, type FROM t_user WHERE user_id>=100 ORDER BY user_id 
 And Return Result.
 ```
 
-### Detail Parameter:
+### Detail Parameter:  
 [更详细的配置说明](../doc/mysql_parameter.md).  
 
 ## Example:
@@ -91,19 +91,15 @@ Mysql Multi DB Transcation
 [MYSQL多数据库事务实现](../doc/mysql_multi_db_transaction.md)。 
 
 
-### 参考:
-[mysql db configure](example/db)
-
-[mysql sql configure](example/sql) 
- 
-[Test DB Create And Test](dbproxy_test.go)  
+### 参考:  
+[mysql db configure](example/db)  
+[mysql sql configure](example/sql)   
+[Test DB Create And Test](dbproxy_test.go)    
 
 
 ### Pgsql
-* 使用pgsql只需要修改配置文件即可.
-
-[pgsql db configure](example/db/pg_account.json)
-
-[pgsql sql configure](example/sql/pgsql_account.json)
+* 使用pgsql只需要修改配置文件即可.  
+[pgsql db configure](example/db/pg_account.json)  
+[pgsql sql configure](example/sql/pgsql_account.json)  
 
 
