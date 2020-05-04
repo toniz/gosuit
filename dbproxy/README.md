@@ -42,17 +42,17 @@ if err != nil {
 ```
 
 * 在./config/sql/目录下找到对应的sql语句:   
-···
+```
 {
     "ident": "t_user_select_by_uid",
     "sql" : "SELECT user_id, user_name, type FROM t_user WHERE user_id>=$limit_start$ ORDER BY user_id ASC LIMIT $limit_end$ ;",
     "noquote" : {"limit_start":"", "limit_end":""},
     "db" : "db_account_r"
 }
-···  
+```  
 
 * 在./config/db/目录下找到DB:db_account_r对应的数据库配置：  
-···
+```
 {
     "ident" : "db_account_r",
     "driver": "mysql",
@@ -67,7 +67,7 @@ if err != nil {
         "timeout" : 5
     }
 }
-···
+```
 
 * 所以上面的调用如下:   
 ```
@@ -82,7 +82,7 @@ And Return Result.
 
 ## Example:
 Mysql Read Write Spilting  
-[MYSQL读写分离实现](../doc/dbproxy_read_write_splitting.md)。 
+[MYSQL读写分离实现](../doc/dbproxy_read_write_split.md)。 
 
 Mysql Sharding Example  
 [MYSQL数据库分片实现](../doc/dbproxy_sharding.md)。 
