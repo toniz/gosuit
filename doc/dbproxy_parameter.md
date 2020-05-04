@@ -11,7 +11,7 @@
     "db" : "db_t_gpsbox_w"
 }
 ```
-* ** noquote:{"table_name":"", "values":""} ** 
+* **noquote:{"table_name":"", "values":""}** 
 ```
 not quoted when replacing the parameters.  
 替换table_name和values这两个参数的时候,不在两边加引号.   
