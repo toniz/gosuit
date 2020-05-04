@@ -12,7 +12,7 @@
 [how to use queue](queue/README.md)  
 [how to use storage](storage/README.md)  
 [how to use loader](loader/README.md)  
-[how to use parser](parse/README.md)  
+[how to use parser](parser/README.md)  
 
 ### DEMO   
 
