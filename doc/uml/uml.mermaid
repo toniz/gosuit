@@ -9,6 +9,6 @@ sequenceDiagram
     Service->>DBProxy: Commit
     Note right of Service: Request Need:<br/> Sql_id and params
     Note right of DBProxy: Construct SQL:<br/>found sql_id in Sql<br/> Configure, and <br/>replace params ,<br/> get the db_id
-    DBProxy->>DB: Found db_id in db configure ,call db 
+    DBProxy->>DB: Found db_id in db configure ,call db
     DB->>DBProxy: Return results
     DBProxy->>Service:  Return Packaging data

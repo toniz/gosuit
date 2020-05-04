@@ -1,6 +1,6 @@
 # SQL File Parameter Instructions
 
-## Example:
+## Common Configure:
 ```
 "ACCOUNT_t_user_select_by_uids" :
 {
@@ -11,8 +11,7 @@
     "db" : "db_t_gpsbox_w"
 }
 ```
-
-### 1. noquote:{"table_name":"", "values":""}  
+* 1. noquote:{"table_name":"", "values":""}  
 ```
 not quoted when replacing the parameters.
 替换table_name和values这两个参数的时候,不在两边加引号.
@@ -43,13 +42,12 @@ req := pb.Query{
 **real sql**: select * from t_user where uid = "abc";
 
 
-### 2. noescape: {"condition":""}
+* 2. noescape: {"condition":""}
 ```
 not escape string when replacing the parameters.
 决定加不加转义字符.需要往数据库写入引号的时候,要加上.
 ```
-
-### 3. check: {"condition": "^.*$"}
+* 3. check: {"condition": "^.*$"}
 ```
 使用正则表达式校验client传过来的参数是否符合要求.
 Use regular expressions to check whether the client parameters match the rule.
@@ -57,7 +55,7 @@ eg: "check":   {"id": "^\\d+$"}
 The id parameter must be number string.
 ```
 
-### 4. "db": "db_t_gpsbox_w"
+* 4. "db": "db_t_gpsbox_w"
 ```
 db_t_gpsbox_w对应的数据库配置在DB配置文件中.
 Connect to this database: db_t_gpsbox_w
@@ -65,7 +63,7 @@ db_t_gpsbox_w is definded in DBConfigure.
 ```
 
 
-## Sharding Examle:
+## Sharding Configure:
 ```
 "ACCOUNT_t_user_sharding":
 {   
@@ -75,17 +73,17 @@ db_t_gpsbox_w is definded in DBConfigure.
 } 
 ```
 
-### 1. sharding: {"dbseq": ""}
+* 1. sharding: {"dbseq": ""}
 ```
 使用client传过来的dbseq值,替换dbname里面的“$dbseq$”。
 Replace the value 'dbseq' in dbname. 
 ```
 
 eg: Mysql Sharding Example   
-[MYSQL数据库分片实现](mysql_db_sharding.md)。 
+[MYSQL数据库分片实现](dbproxy_db_sharding.md)。 
 
 
-## Trancation Example
+## Trancation Configure
 ```
 "ACCOUNT_t_user_insert_transaction" : 
 {   
@@ -107,10 +105,10 @@ eg: Mysql Sharding Example
 }
 ```
 
-### 1. Put the sql configure in "sqlgroup". It will execute with transaction.   
+* 1. Put the sql configure in "sqlgroup". It will execute with transaction.   
 
 eg: 
 Mysql Multi DB Transcation  
-[MYSQL多数据库事务实现](mysql_multi_db_transaction.md)。 
+[MYSQL多数据库事务实现](dbproxy_multi_db_transaction.md)。 
 
 

@@ -66,6 +66,7 @@
 
 ### 使用例子可以参考
 [rabbitmq 测试用例](rabbitmq/rabbitmq_test.go)
+
 [kafka测试用例](kafka/kafka_test.go)
 
 

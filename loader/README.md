@@ -66,7 +66,8 @@
 ```
 
 ### 使用例子可以参考
-[file loader 测试用例](fileloader/loader_test.go)
-[etcd loader 测试用例](etcdloader/loader_test.go)
+* [file loader 测试用例](fileloader/loader_test.go)
+
+* [etcd loader 测试用例](etcdloader/loader_test.go)
 
 

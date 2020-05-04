@@ -1,6 +1,6 @@
 # Mysql Multi DB Transaction
 
-## GUDP DB Configure File:  
+## DB Configure File:  
 ```json
 {
     "db_t_account_w" : 

@@ -1,6 +1,6 @@
 # Mysql DB Sharding
 
-## GUDP DB Configure File:  
+## DB Configure File:  
 ```json
 {
     "db_t_account_0" : 

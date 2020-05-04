@@ -17,22 +17,8 @@
 * 支持多数据库事务提交.  
 
 
-## Sequence Diagram
-``` sequenceDiagram
-    participant Service
-    participant DBProxy
-    participant DBConfigure
-    participant SQLConfigure
-    participant DB
-    DBProxy->>DBConfigure: Get DB Configure
-    DBProxy->>SQLConfigure:  Get Sql Configure
-    Service->>DBProxy: Commit
-    Note right of Service: Request Need:<br/> Sql_id and params
-    Note right of DBProxy: Construct SQL:<br/>found sql_id in Sql<br/> Configure, and <br/>replace params ,<br/> get the db_id
-    DBProxy->>DB: Found db_id in db configure ,call db
-    DB->>DBProxy: Return results
-    DBProxy->>Service:  Return Packaging data
-```
+## 数据流图
+![测试](../doc/uml/uml.png)
 
 * 调用方法是: 传递sql_id和参数,参数是一个map.
 ```
@@ -92,28 +78,32 @@ And Return Result.
 ```
 
 ### Detail Parameter:
-[更详细的配置说明](doc/mysql_parameter.md).  
+[更详细的配置说明](../doc/mysql_parameter.md).  
 
 ## Example:
 Mysql Read Write Spilting  
-[MYSQL读写分离实现](doc/mysql_read_write_splitting.md)。 
+[MYSQL读写分离实现](../doc/mysql_read_write_splitting.md)。 
 
 Mysql Sharding Example  
-[MYSQL数据库分片实现](doc/mysql_db_sharding.md)。 
+[MYSQL数据库分片实现](../doc/mysql_db_sharding.md)。 
 
 Mysql Multi DB Transcation  
-[MYSQL多数据库事务实现](doc/mysql_multi_db_transaction.md)。 
+[MYSQL多数据库事务实现](../doc/mysql_multi_db_transaction.md)。 
 
 
 ### 参考:
-[mysql db configure](example/db)  
-[mysql sql configure](example/sql)  
+[mysql db configure](example/db)
+
+[mysql sql configure](example/sql) 
+ 
 [Test DB Create And Test](dbproxy_test.go)  
 
 
 ### Pgsql
-* 使用pgsql只需要修改配置文件即可。
-[pgsql db configure](example/db/pg_account.json)。
-[pgsql sql configure](example/sql/pgsql_account.json)。
+* 使用pgsql只需要修改配置文件即可.
+
+[pgsql db configure](example/db/pg_account.json)
+
+[pgsql sql configure](example/sql/pgsql_account.json)
 
 

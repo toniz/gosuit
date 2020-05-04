@@ -120,8 +120,8 @@
 ```
 
 ### 使用例子可以参考
-[cos 测试用例](cos/cosclient_test.go)
-[oss 测试用例](oss/ossclient_test.go)
-[s3 测试用例](s3/s3client_test.go)
+* [cos 测试用例](cos/cosclient_test.go)
+* [oss 测试用例](oss/ossclient_test.go)
+* [s3 测试用例](s3/s3client_test.go)
 
 
