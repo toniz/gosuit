@@ -78,17 +78,17 @@ And Return Result.
 ```
 
 ### Detail Parameter:  
-[更详细的配置说明](../doc/mysql_parameter.md).  
+[更详细的配置说明](../doc/dbproxy_parameter.md).  
 
 ## Example:
 Mysql Read Write Spilting  
-[MYSQL读写分离实现](../doc/mysql_read_write_splitting.md)。 
+[MYSQL读写分离实现](../doc/dbproxy_read_write_splitting.md)。 
 
 Mysql Sharding Example  
-[MYSQL数据库分片实现](../doc/mysql_db_sharding.md)。 
+[MYSQL数据库分片实现](../doc/dbproxy_sharding.md)。 
 
 Mysql Multi DB Transcation  
-[MYSQL多数据库事务实现](../doc/mysql_multi_db_transaction.md)。 
+[MYSQL多数据库事务实现](../doc/dbproxy_multi_db_transaction.md)。 
 
 
 ### 参考:  
@@ -98,8 +98,8 @@ Mysql Multi DB Transcation
 
 
 ### Pgsql
-* 使用pgsql只需要修改配置文件即可.  
-[pgsql db configure](example/db/pg_account.json)  
-[pgsql sql configure](example/sql/pgsql_account.json)  
+* 使用pgsql只需要修改配置文件即可.   
+[pgsql db configure](example/db/pg_account.json)    
+[pgsql sql configure](example/sql/pgsql_account.json)   
 
 

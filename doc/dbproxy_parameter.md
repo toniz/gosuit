@@ -80,7 +80,7 @@ Replace the value 'dbseq' in dbname.
 ```
 
 eg: Mysql Sharding Example   
-[MYSQL数据库分片实现](dbproxy_db_sharding.md)。 
+[MYSQL数据库分片实现](dbproxy_sharding.md)。 
 
 
 ## Trancation Configure
