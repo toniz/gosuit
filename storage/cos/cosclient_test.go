@@ -5,65 +5,65 @@
 package cosclient_test
 
 import (
-    "context"
-    "io"
-    "time"
+	"context"
+	"io"
+	"time"
 
-    . "github.com/onsi/ginkgo"
-    . "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
-    . "hsb.com/storage"
-    _ "hsb.com/storage/cos"
+	. "hsb.com/storage"
+	_ "hsb.com/storage/cos"
 )
 
 var _ = Describe("COS Client", func() {
-    var (
-        err        error
-        reader     io.Reader
-        bucketName string
-    )
-    c, _ := NewStorageDriver("cos")
+	var (
+		err        error
+		reader     io.Reader
+		bucketName string
+	)
+	c, _ := NewStorageDriver("cos")
 
-    endpoint := "https://<bucket>.cos.ap-guangzhou.myqcloud.com"
-    accessKeyID := "AKIDtNkXxNaS2azJaprmcRxRnEfxVwKgt1wh"
-    secretAccessKey := "tsx0vgH39ezRllcFi8R5yX3RegAZDj4G"
-    bucketName = "toniz-1253750834"
-    err = c.Connect(endpoint, accessKeyID, secretAccessKey)
+	endpoint := "https://<bucket>.cos.ap-guangzhou.myqcloud.com"
+	accessKeyID := "AKIDJ"
+	secretAccessKey := "tsx0vg"
+	bucketName = "toniz-12537"
+	err = c.Connect(endpoint, accessKeyID, secretAccessKey)
 
-    It("Should Return No Error", func() {
-        Expect(err).NotTo(HaveOccurred())
-    })
+	It("Should Return No Error", func() {
+		Expect(err).NotTo(HaveOccurred())
+	})
 
-    Describe("Test Tencent COS API", func() {
-        Context("Test GetObjectList", func() {
-            objectPrefix := "test"
-            _, err = c.GetObjectList(bucketName, objectPrefix)
+	Describe("Test Tencent COS API", func() {
+		Context("Test GetObjectList", func() {
+			objectPrefix := "test"
+			_, err = c.GetObjectList(bucketName, objectPrefix)
 
-            It("Should Return No Error", func() {
-                Expect(err).NotTo(HaveOccurred())
-            })
-        })
+			It("Should Return No Error", func() {
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
 
-        Context("Test GetObject", func() {
-            objectName := "test.jpg"
-            ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
-            defer cancel()
-            reader, err = c.GetObject(ctx, bucketName, objectName)
+		Context("Test GetObject", func() {
+			objectName := "test.jpg"
+			ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+			defer cancel()
+			reader, err = c.GetObject(ctx, bucketName, objectName)
 
-            It("Should Return No Error", func() {
-                Expect(err).NotTo(HaveOccurred())
-            })
-        })
+			It("Should Return No Error", func() {
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
 
-        Context("Test PutObject", func() {
-            objectName := "test_new.jpg"
-            ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
-            defer cancel()
-            _, err = c.PutObject(ctx, bucketName, objectName, reader, -1)
+		Context("Test PutObject", func() {
+			objectName := "test_new.jpg"
+			ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+			defer cancel()
+			_, err = c.PutObject(ctx, bucketName, objectName, reader, -1)
 
-            It("Should Return No Error", func() {
-                Expect(err).NotTo(HaveOccurred())
-            })
-        })
-    })
+			It("Should Return No Error", func() {
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
+	})
 })

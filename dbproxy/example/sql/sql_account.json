@@ -40,21 +40,21 @@
     },
     {
         "ident":"t_user_insert_transaction",
-	"sqlgroup": 
-	[
+        "sqlgroup": 
+        [
             {
-		"sql" : "INSERT IGNORE INTO t_user(Fuser_id, Fname, Frole_group) VALUES($id$, $name$ ,$group$);",
-		"noquote": {"id":""},
-		"check":   {"id": "^\\d+$"},
-		"db" : "db_account_w"
+        	"sql" : "INSERT IGNORE INTO t_user(Fuser_id, Fname, Frole_group) VALUES($id$, $name$ ,$group$);",
+        	"noquote": {"id":""},
+        	"check":   {"id": "^\\d+$"},
+        	"db" : "db_account_w"
             },
             { 
-		"sql" : "INSERT IGNORE INTO t_user(Fuser_id, Fname, Frole_group) VALUES($id$, $name$ ,$group$);",
-		"noquote": {"id":""},
-		"check":   {"id": "^\\d+$"},
-		"db" : "db_account_w"
+        	"sql" : "INSERT IGNORE INTO t_user(Fuser_id, Fname, Frole_group) VALUES($id$, $name$ ,$group$);",
+        	"noquote": {"id":""},
+        	"check":   {"id": "^\\d+$"},
+        	"db" : "db_account_w"
             }
-	]
+        ]
     },
     {
         "ident":"t_user_sharding",
