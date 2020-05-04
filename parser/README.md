@@ -55,6 +55,6 @@ err := Decode("yaml", bytes, &b)
 ```
 
 ### 使用例子可以参考  
-[parse 测试用例](parse_test.go)  
+[parser 测试用例](parser_test.go)  
 
 
