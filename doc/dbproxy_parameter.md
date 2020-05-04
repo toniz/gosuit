@@ -11,13 +11,32 @@
     "db" : "db_t_gpsbox_w"
 }
 ```
+### 1.1 Parameter introduction
 * **noquote:{"table_name":"", "values":""}** 
 ```
 not quoted when replacing the parameters.  
 替换table_name和values这两个参数的时候,不在两边加引号.   
 ```
+* **noescape: {"condition":""}**  
+```
+not escape string when replacing the parameters.
+决定加不加转义字符.需要往数据库写入引号的时候,要加上.
+```
+* **check: {"condition": "^.*$"}**  
+```
+使用正则表达式校验client传过来的参数是否符合要求.
+Use regular expressions to check whether the client parameters match the rule.
+eg: "check":   {"id": "^\\d+$"}
+The id parameter must be number string.
+```
 
-### 1.2 **eg:**   
+* **"db": "db_t_gpsbox_w"**  
+```
+db_t_gpsbox_w对应的数据库配置在DB配置文件中.
+Connect to this database: db_t_gpsbox_w
+db_t_gpsbox_w is definded in DBConfigure.
+```
+### 1.2 **example:**   
 * sql configure:   
 ```
 "example1" :
@@ -41,25 +60,7 @@ Params: map[string]string{
 select * from t_user where uid = "abc";  
 ```
 
-* **noescape: {"condition":""}**  
-```
-not escape string when replacing the parameters.
-决定加不加转义字符.需要往数据库写入引号的时候,要加上.
-```
-* **check: {"condition": "^.*$"}**  
-```
-使用正则表达式校验client传过来的参数是否符合要求.
-Use regular expressions to check whether the client parameters match the rule.
-eg: "check":   {"id": "^\\d+$"}
-The id parameter must be number string.
-```
 
-* **"db": "db_t_gpsbox_w"**  
-```
-db_t_gpsbox_w对应的数据库配置在DB配置文件中.
-Connect to this database: db_t_gpsbox_w
-db_t_gpsbox_w is definded in DBConfigure.
-```
 
 ## 2. Sharding Configure:  
 ```
@@ -70,13 +71,14 @@ db_t_gpsbox_w is definded in DBConfigure.
     "db" : "db_t_account_$dbseq$"
 } 
 ```
+### 2.1 Parameter introduction
 * **sharding: {"dbseq": ""}**  
 ```
 使用client传过来的dbseq值,替换dbname里面的“$dbseq$”。
 Replace the value 'dbseq' in dbname. 
 ```
 
-### 2.2 **eg:**   
+### 2.2 **example:**   
 * Mysql Sharding Example   
 [MYSQL数据库分片实现](dbproxy_sharding.md)。  
 
@@ -102,7 +104,7 @@ Replace the value 'dbseq' in dbname.
     ]   
 }
 ```
-
+### 3.1 Parameter introduction
 * **Put the sql configure in "sqlgroup". It will execute with transaction.**   
 
 ### 3.2 ** eg: **   
