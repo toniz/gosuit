@@ -59,13 +59,9 @@
 ## Then The GRPC Clien.go Call Like this:  
 
 ```go
-    mds := NewMysqlDataService()
-    mds.Cfg.DBPath = "./config/db/"
-    mds.Cfg.SqlPath = "./config/sql/"
-    err := mds.InitMysqlConnection()
-    if err != nil {
-        log.Fatalf("Connect To Mysql Failed:", err)
-    }
+    s := NewDBProxy()
+    err := s.AddDBHandleFromFile("example/db", ".json", "db_*")
+    err := s.AddProxySQLFromFile("example/sql", "json", "sql_*")
 
     ident := "t_user_insert_transaction"
     gparams := []map[string]string{
