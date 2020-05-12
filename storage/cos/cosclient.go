@@ -11,8 +11,8 @@ import (
 	"net/url"
 	"strings"
 
-        "hsb.com/storage"
 	"github.com/tencentyun/cos-go-sdk-v5"
+	"github.com/toniz/gosuit/storage"
 )
 
 type CosClient struct {
@@ -22,16 +22,16 @@ type CosClient struct {
 }
 
 func init() {
-    storage.Register("cos", func() storage.StorageDriver {
-        return new(CosClient)
-    })
+	storage.Register("cos", func() storage.StorageDriver {
+		return new(CosClient)
+	})
 }
 
 // Create Tencent COS Client Handler
 //   endpoint: https://<bucket>.cos.ap-guangzhou.myqcloud.com
 //   accessKeyID: cos secretID
 //   secretAccessKey: cos secretKey
-func  (c *CosClient) Connect(endpoint string, accessKeyID string, secretAccessKey string)  error {
+func (c *CosClient) Connect(endpoint string, accessKeyID string, secretAccessKey string) error {
 	c.endpoint = endpoint
 	c.secretID = accessKeyID
 	c.secretKey = secretAccessKey

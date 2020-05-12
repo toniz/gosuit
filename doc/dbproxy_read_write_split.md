@@ -91,7 +91,7 @@ GRANT SELECT  ON accountdb.* TO 'account_r'@'127.0.0.1' IDENTIFIED BY '123456' W
 ```go
     s := NewDBProxy()
     err := s.AddDBHandleFromFile("example/db", ".json", "db_*")
-    err := s.AddProxySQLFromFile("example/sql", "json", "sql_*")
+    err = s.AddProxySQLFromFile("example/sql", "json", "sql_*")
     ident = "t_user_select_by_uid"
     params = map[string]string{
         "limit_start": "100",

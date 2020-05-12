@@ -6,7 +6,7 @@
 
 ## json解析:  
 ``` go
-import . "hsb.com/parser"
+import . "github.com/toniz/gosuit/parser"
 
 type testJson struct{
     Name  string `json:"name"`

@@ -7,7 +7,7 @@ package mqtt
 import (
     "log"
 
-    "hsb.com/queue"
+    "github.com/toniz/gosuit/queue"
     . "github.com/eclipse/paho.mqtt.golang"
 )
 

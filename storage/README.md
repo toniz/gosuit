@@ -8,8 +8,8 @@
 * 创建cos对象：  
 ``` go
 import (
-    . "hsb.com/storage"
-    _ "hsb.com/storage/cos"
+    . "github.com/toniz/gosuit/storage"
+    _ "github.com/toniz/gosuit/storage/cos"
 )
 
 c, _ := NewStorageDriver("cos")
@@ -18,8 +18,8 @@ c, _ := NewStorageDriver("cos")
 * 创建oss对象:  
 ``` go
 import (
-    . "hsb.com/storage"
-    _ "hsb.com/storage/oss"
+    . "github.com/toniz/gosuit/storage"
+    _ "github.com/toniz/gosuit/storage/oss"
 )
 c, _ := NewStorageDriver("oss")
 ```
@@ -27,8 +27,8 @@ c, _ := NewStorageDriver("oss")
 * 创建ceph s3对象：  
 ``` go
 import (
-    . "hsb.com/storage"
-    _ "hsb.com/storage/s3"
+    . "github.com/toniz/gosuit/storage"
+    _ "github.com/toniz/gosuit/storage/s3"
 )
 c, _ := NewStorageDriver("s3")
 ```

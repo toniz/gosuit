@@ -13,7 +13,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
-	. "hsb.com/dbproxy"
+	. "github.com/toniz/gosuit/dbproxy"
 )
 
 var _ = Describe("Test Database Proxy", func() {

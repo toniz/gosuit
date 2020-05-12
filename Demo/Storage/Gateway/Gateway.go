@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"os"
 
-	//   rb "hsb.com/mq/rabbitmq"
-	. "hsb.com/storage/oss"
+	//   rb "github.com/toniz/gosuit/mq/rabbitmq"
+	. "github.com/toniz/gosuit/storage/oss"
 	. "ibbwhat.com/mysql"
 )
 

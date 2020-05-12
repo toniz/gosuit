@@ -6,8 +6,8 @@
 * 创建file loader对象：  
 ``` go
 import (
-    "hsb.com/loader"
-    _ "hsb.com/loader/fileloader"
+    "github.com/toniz/gosuit/loader"
+    _ "github.com/toniz/gosuit/loader/fileloader"
 )
 
 l, err := loader.NewLoader("file")
@@ -16,8 +16,8 @@ l, err := loader.NewLoader("file")
 * 创建etcd loader对象：
 ``` go
 import (
-    "hsb.com/loader"
-    _ "hsb.com/loader/etcdloader"
+    "github.com/toniz/gosuit/loader"
+    _ "github.com/toniz/gosuit/loader/etcdloader"
 )
 l, err := loader.NewLoader("etcd")
 ```

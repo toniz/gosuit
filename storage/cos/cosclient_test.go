@@ -12,8 +12,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	. "hsb.com/storage"
-	_ "hsb.com/storage/cos"
+	. "github.com/toniz/gosuit/storage"
+	_ "github.com/toniz/gosuit/storage/cos"
 )
 
 var _ = Describe("COS Client", func() {

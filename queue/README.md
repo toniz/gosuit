@@ -6,8 +6,8 @@
 * 创建rabbitmq对象：  
 ``` go
 import (
-    . "hsb.com/queue"
-    _ "hsb.com/queue/rabbitmq"
+    . "github.com/toniz/gosuit/queue"
+    _ "github.com/toniz/gosuit/queue/rabbitmq"
 )
 
 mq, _ := NewMessageQueue("rabbitmq")
@@ -16,8 +16,8 @@ mq, _ := NewMessageQueue("rabbitmq")
 * 创建kafka对象：  
 ``` go
 import (
-    . "hsb.com/queue"
-    _ "hsb.com/queue/kafka"
+    . "github.com/toniz/gosuit/queue"
+    _ "github.com/toniz/gosuit/queue/kafka"
 )
 mq, _ := NewMessageQueue("kafka")
 ```

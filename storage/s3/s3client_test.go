@@ -12,8 +12,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	. "hsb.com/storage"
-	_ "hsb.com/storage/s3"
+	. "github.com/toniz/gosuit/storage"
+	_ "github.com/toniz/gosuit/storage/s3"
 )
 
 var _ = Describe("Ceph S3 Client", func() {
