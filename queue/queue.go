@@ -9,9 +9,11 @@ import (
     "fmt"
 )
 
+// Worker Definition: fn function return: 0 continue; 1 exit; 
 type MessageQueuer interface {
+    SetParameter(paramsMap map[string]interface{}) error
     Connect(endpoint string, user string, password string) error
-    Worker(qname string, fn func([]byte) error) error
+    Worker(qname string, fn func([]byte) int) error
     SendTask(qname string, msg string) error
 }
 
@@ -23,6 +25,8 @@ func Register(name string, l func() MessageQueuer) {
     mqers[name] = l
 }
 
+
+// 't' has three values to choose from: rabbitmq, kafka, matt
 func NewMessageQueue(t string) (m MessageQueuer, err error) {
     if f, ok := mqers[t]; ok {
         m = f()

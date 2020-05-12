@@ -33,6 +33,12 @@ func NewKafka() *Kafka {
     }
 }
 
+// Set Variables
+func (c *Kafka) SetParameter(paramsMap map[string]interface{}) error {
+
+    return nil
+}
+
 func (c *Kafka) Connect(endpoint string, user string, password string) error {
     c.broker = endpoint
     return nil
@@ -72,7 +78,7 @@ func (c *Kafka) SendTask(topic string, msg string) error {
 
 func  (c *Kafka)AddReader(topic string) {
     r := NewReader(ReaderConfig{
-        Brokers:   []string{"10.107.8.52:9092"},
+        Brokers:   []string{c.broker},
         Topic:     topic,
         GroupID:   topic, // use topic name because task only need run one time.
         // Partition: 0,
@@ -91,7 +97,7 @@ func  (c *Kafka)GetReader(topic string) *Reader {
     return c.readers[topic]
 }
 
-func (c *Kafka) Worker(topic string, fn func([]byte) error) error {
+func (c *Kafka) Worker(topic string, fn func([]byte) int) error {
     r := c.GetReader(topic)
 
     go func() {
@@ -102,7 +108,10 @@ func (c *Kafka) Worker(topic string, fn func([]byte) error) error {
             }
 
             log.Printf("message at topic/partition/offset %v/%v/%v: %s = %s\n", m.Topic, m.Partition, m.Offset, string(m.Key), string(m.Value))
-            fn(m.Value)
+            ret := fn(m.Value)
+            if ret == 1 {
+                break
+            }
         }
     }()
 

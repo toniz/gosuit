@@ -29,6 +29,12 @@ func NewRabbitMQ() *RabbitMQ {
     }
 }
 
+// Set Variables
+func (c *RabbitMQ) SetParameter(paramsMap map[string]interface{}) error {
+
+    return nil
+}
+
 // Create RabbitMQ Connection Handler, Declare Queue.
 func (c *RabbitMQ) Connect(endpoint string, user string, password string) error {
     connString := "amqp://" + user + ":" + password + "@" + endpoint +"/"
@@ -93,7 +99,7 @@ func (c *RabbitMQ) SendTask(qname string, msg string) error {
     }
 }
 
-func (c *RabbitMQ) Worker(qname string, fn func([]byte) error) error {
+func (c *RabbitMQ) Worker(qname string, fn func([]byte) int) error {
     ch, err := c.conn.Channel()
     if err != nil {
         log.Printf("Failed to open a channel: %s", err)
@@ -141,16 +147,19 @@ func (c *RabbitMQ) Worker(qname string, fn func([]byte) error) error {
     go func() {
         for d := range msgs {
             log.Printf("Received a message: %s", d.Body)
-            if e := fn(d.Body); e == nil {
+            ret := fn(d.Body)
+            if ret == 0 {
                 d.Ack(false)
+            }
+
+            if ret == 1 {
+                break
             }
         }
     }()
 
     return nil
 }
-
-
 
 
 

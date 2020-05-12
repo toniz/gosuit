@@ -44,13 +44,13 @@ var _ = Describe("RabbitMQ Test", func() {
         Context("Test Worker", func() {
             queueName := "task_queue"
             It("Should Return No Error", func() {
-                err := mq.Worker(queueName, func(s []byte) error{
+                err := mq.Worker(queueName, func(s []byte) int{
                     log.Printf("Received a message: %s", s)
                     dot_count := bytes.Count(s, []byte("."))
                     t := time.Duration(dot_count)
                     time.Sleep(t * time.Second)
                     log.Printf("Done")
-                    return nil
+                    return 0
                 })
 
                 Expect(err).NotTo(HaveOccurred())

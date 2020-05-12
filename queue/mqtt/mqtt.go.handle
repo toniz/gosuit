@@ -1,0 +1,199 @@
+/*
+ * Create By Xinwenjia 2018-04-25
+ */
+
+package mqtt
+
+import (
+    "log"
+
+    "hsb.com/queue"
+    . "github.com/eclipse/paho.mqtt.golang"
+)
+
+type Mqtt struct {
+    clientID string
+    keepAliveTime time.Duration
+    pingTimeout time.Duration
+    connectRetry bool
+    connectRetryInterval time.Duration
+    connectTimeout time.Duration
+    autoReconnect bool
+    maxReconnectInterval time.Duration
+
+    opts *ClientOptions
+    pubClient *Client
+    subClient *Client
+    mattServiceQuality int
+}
+
+func init() {
+    queue.Register("rabbitmq", func() queue.MessageQueuer {
+        return NewMqtt()
+    })
+}
+
+func NewMqtt() *Mqtt {timestamp := time.Now().Unix()
+    return &Mqtt{
+        connectRetry: false,
+        connectRetryInterval: 3 * time.Second,
+        connectTimeout: 10 * time.Second,
+        autoReconnect: true;
+        maxReconnectInterval: 10 * time.Minute,
+        keepAliveTime: 10 * time.Second,
+        clientID: fmt.Sprintf("tl_server_%d",timestamp),
+        pingTimeout: 1 * time.Second,
+
+        opts: nil,
+        pubClient: nil,
+        subClient: nil,
+        mattServiceQuality: 1
+    }
+}
+
+// Set Mqtt Paramters
+func (c *Mqtt) SetParameter(paramsMap map[string]interface{}) {
+    if val, ok := paramsMap["connectRetry"]; ok {
+        c.connectRetry = paramsMap["connectRetry"]
+    }
+
+    if val, ok := paramsMap["connectRetryInterval"]; ok {
+        c.connectRetryInterval = paramsMap["connectRetryInterval"]
+    }
+
+    if val, ok := paramsMap["connectTimeout"]; ok {
+        c.connectTimeout = paramsMap["connectTimeout"]
+    }
+
+    if val, ok := paramsMap["keepAliveTime"]; ok {
+        c.keepAliveTime = paramsMap["keepAliveTime"]
+    }
+
+    if val, ok := paramsMap["autoReconnect"]; ok {
+        c.autoReconnect = paramsMap["autoReconnect"]
+    }
+
+    if val, ok := paramsMap["maxReconnectInterval"]; ok {
+        c.maxReconnectInterval = paramsMap["maxReconnectInterval"]
+    }
+
+    if val, ok := paramsMap["pingTimeout"]; ok {
+        c.pingTimeout = paramsMap["pingTimeout"]
+    }
+
+    if val, ok := paramsMap["clientID"]; ok {
+        c.clientID = paramsMap["clientID"]
+    }
+
+    if val, ok := paramsMap["mattServiceQuality"]; ok {
+        c.mattServiceQuality = paramsMap["mattServiceQuality"]
+    }
+
+    return
+}
+
+// Create Mqtt Connection Handler, Declare Queue.
+func (c *Mqtt) Connect(endpoint string, user string, password string) error {
+    c.opts = NewClientOptions().AddBroker("tcp://127.0.0.1:1883")
+    c.opts.SetClientID(c.clientID)
+    c.opts.SetKeepAlive(c.keepAliveTime)
+    c.opts.SetPingTimeout(c.pingTimeout)
+    c.opts.SetConnectTimeout(c.connectTimeout)
+    c.opts.SetConnectRetry(c.connectRetry)
+    c.opts.SetConnectRetryInterval(c.connectRetryInterval)
+    c.opts.SetAutoReconnect(c.autoReconnect())
+    c.opts.SetMaxReconnectInterval(c.connectRetryInterval)
+
+   // do not connect here. because of Subscribe need to set opts.SetDefaultPublishHandler
+    return nil
+}
+
+func (c *Mqtt) SendTask(topic string, msg string) error {
+    // If not connect
+    if c.pubClient == nil {
+        mq := NewClient(opts)
+        if token := mq.Connect(); mq.Wait() && mq.Error() != nil {
+            log.Printf("Failed to connect mqtt: %v", c)
+            return token.Error()
+        }
+        c.pubClient = mq
+    }
+
+    token := c.pubClient.Publish(topic, byte(c.mattServiceQuality), false, msg)
+    token.Wait()
+
+    // Because AutoReconnect is set, so don`t need this code.
+    //if token.Error() != nil :
+    //{
+    //    c.pubClient.Disconnect(250)
+    //    c.pubClient = nil
+    //}
+
+    return token.Error()
+}
+
+func (c *Mqtt) Worker(topic string, fn func([]byte) error) error {
+        receiveCount := 0
+        choke := make(chan [2]string)
+
+    c.opts.SetDefaultPublishHandler(func(client MQTT.Client, msg MQTT.Message) {
+        choke <- [2]string{msg.Topic(), string(msg.Payload())}
+    })
+
+    if c.subClient == nil {
+        mq := NewClient(opts)
+        if token := mq.Connect(); token.Wait() && token.Error() != nil {
+            log.Printf("Failed to connect mqtt: %v", c)
+            return token.Error()
+        }
+        c.subClient = mq
+    }
+
+    if token := c.subClient.Subscribe(topic, byte(c.mattServiceQuality), nil); token.Wait() && token.Error() != nil {
+        log.Printf("Failed to Subscribe Message: %v", token.Error())
+        c.subClient.Disconnect(250)
+        c.subClient = nil
+    }
+
+        for receiveCount < *num {
+            incoming := <-choke
+            fmt.Printf("RECEIVED TOPIC: %s MESSAGE: %s\n", incoming[0], incoming[1])
+            receiveCount++
+        }
+
+        client.Disconnect(250)
+        fmt.Println("Sample Subscriber Disconnected")
+
+
+
+    msgs, err := ch.Consume(
+        qname, // queue
+        "",     // consumer
+        false,  // auto-ack
+        false,  // exclusive
+        false,  // no-local
+        false,  // no-wait
+        nil,    // args
+    )
+    if err != nil {
+        log.Printf("Failed to register a consumer: %s", err)
+        return err
+    }
+
+    go func() {
+        for d := range msgs {
+            log.Printf("Received a message: %s", d.Body)
+            if e := fn(d.Body); e == nil {
+                d.Ack(false)
+            }
+        }
+    }()
+
+    return nil
+}
+
+
+
+
+
+
