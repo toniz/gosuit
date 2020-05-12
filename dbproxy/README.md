@@ -22,14 +22,9 @@
 
 * 调用方法是: 传递sql_id和参数,参数是一个map.  
 ```
-mds := NewMysqlDataService()
-mds.Cfg.DBPath = "./config/db/"
-mds.Cfg.SqlPath = "./config/sql/"
-err := mds.InitMysqlConnection()
-if err != nil {
-    log.Fatalf("Connect To Mysql Failed:", err)
-}
-
+s := NewDBProxy()
+err := s.AddDBHandleFromFile("example/db", ".json", "db_*")
+err := s.AddProxySQLFromFile("example/sql", "json", "sql_*")
 ident = "t_user_select_by_uid"
 params = map[string]string{
     "limit_start": "100",
