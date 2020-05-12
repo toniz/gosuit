@@ -47,27 +47,21 @@
 ## Then The GRPC Clien.go Call Like this:  
 
 ```go
-    mds := NewMysqlDataService()
-    mds.Cfg.DBPath = "./config/db/"
-    mds.Cfg.SqlPath = "./config/sql/"
-    err := mds.InitMysqlConnection()
-    if err != nil {
-        log.Fatalf("Connect To Mysql Failed:", err)
+s := NewDBProxy()
+err := s.AddDBHandleFromFile("example/db", ".json", "db_*")
+err := s.AddProxySQLFromFile("example/sql", "json", "sql_*")
+uids := []int{100, 1003456, 2004000}
+for _, uid := range uids {
+    shardnum := uid / 1000000
+    ident := "t_user_sharding",
+    params := map[string]string{
+        "dbseq": strconv.Itoa(shardnum),
     }
 
-	uids := []int{100, 1003456, 2004000}
-	for _, uid := range uids {
-		shardnum := uid / 1000000
-		ident := "t_user_sharding",
-		params := map[string]string{
-		    "dbseq": strconv.Itoa(shardnum),
-		}
-
-        res, err := mds.AutoCommit(context.TODO(), ident, params)
-        if err != nil {
-            log.Printf("Select? From DB Failed: %v", err)
-        }
-	}
+    res, err := mds.AutoCommit(context.TODO(), ident, params)
+    if err != nil {
+        log.Printf("Select? From DB Failed: %v", err)
+    }
 }
 ```
 
