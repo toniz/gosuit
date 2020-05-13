@@ -16,6 +16,25 @@
 * 支持数据库分片.  
 * 支持多数据库事务提交.  
 
+## 使用准备
+**和database/sql一样，使用那个数据库就加载那个驱动**   
+* mysql:
+```
+go get github.com/go-sql-driver/mysql
+
+import (
+    _ "github.com/go-sql-driver/mysql"
+)
+```
+   
+* pgsql
+```
+go get github.com/lib/pq
+
+improt (
+    _ "github.com/lib/pq"
+)
+```
 
 ## 数据流图
 ![测试](../doc/uml/uml.png)

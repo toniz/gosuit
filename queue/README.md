@@ -1,6 +1,23 @@
 ## 简介
 目前只做了任务队列的设计。
-目前支持了kafka和rabbitmq  
+目前支持了kafka,rabbitmq和mqtt  
+
+## 使用准备
+* 使用kafka
+```
+go get github.com/segmentio/kafka-go
+```
+* 使用rabbitmq
+```
+go get github.com/streadway/amqp
+```
+* 使用mqtt
+```
+github.com/eclipse/paho.mqtt.golang
+```
+   
+**PS：没有用到就不需要下载**
+
 
 ## 创建对象：
 * 创建rabbitmq对象：  

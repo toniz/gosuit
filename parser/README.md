@@ -3,6 +3,9 @@
 目前格式支持： json, xml, yaml  
 添加格式支持，大部分格式只需要在parser.go头文件对应的库即可。  
 
+## 前期准备：
+* go get gopkg.in/yaml.v2
+
 
 ## json解析:  
 ``` go

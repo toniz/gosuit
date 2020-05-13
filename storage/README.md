@@ -3,6 +3,20 @@
 几行代码就能很方便的在不同对象存储间同步文件。  
 * 目前支持了阿里云oss, 腾讯云cos和ceph s3.  
 
+## 前提准备  
+* 使用腾讯云COS  
+```
+go get github.com/tencentyun/cos-go-sdk-v5
+```
+* 使用阿里云OSS  
+```
+go get github.com/aliyun/aliyun-oss-go-sdk/oss
+```
+* 使用AWS的S3协议  
+```
+go get github.com/minio/minio-go
+```
+**PS：没有用到就不需要下载**
 
 ## 创建对象：
 * 创建cos对象：  
