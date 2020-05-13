@@ -119,8 +119,8 @@ func (c *Mqtt) Connect(endpoint string, user string, password string) error {
 	c.opts.SetKeepAlive(c.keepAliveTime)
 	c.opts.SetPingTimeout(c.pingTimeout)
 	c.opts.SetConnectTimeout(c.connectTimeout)
-	c.opts.SetConnectRetry(c.connectRetry)
-	c.opts.SetConnectRetryInterval(c.connectRetryInterval)
+	//c.opts.SetConnectRetry(c.connectRetry)
+	//c.opts.SetConnectRetryInterval(c.connectRetryInterval)
 	c.opts.SetAutoReconnect(c.autoReconnect)
 	c.opts.SetMaxReconnectInterval(c.connectRetryInterval)
 
