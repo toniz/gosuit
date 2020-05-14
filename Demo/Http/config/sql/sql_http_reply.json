@@ -1,0 +1,17 @@
+[
+    {
+        "ident": "GOIR_t_http_reply_rule_insert",
+        "sql" : "INSERT INTO chanxian.t_http_reply_rule(Frule_id, Frequest_uri, Fresponse, Fcheck, Fremark) VALUES($id$, $request$ ,$response$, $check$, $remark$);",
+        "db" : "db_chanxian_w"
+    },
+    {
+        "ident":"GOIR_t_http_reply_rule_update_byid",
+        "sql" : "UPDATE chanxian.t_http_reply_rule SET $key$ = $value$ WHERE Frule_id = $id$;",
+        "db" : "db_chanxian_w"
+    },
+    {
+        "ident": "GOIR_t_http_reply_rule_select_byid",
+        "sql" : "SELECT Frule_id, Frequest_uri, Fresponse, Fcheck, Fremark, Fcreate_time, Fupdate_time FROM chanxian.t_http_reply_rule WHERE Frule_id = $id$",
+        "db" : "db_chanxian_r"
+    }
+]
