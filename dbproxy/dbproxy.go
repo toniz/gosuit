@@ -75,12 +75,19 @@ func NewDBProxy() *DBProxy {
     return s
 }
 
+// Close DBProxy Handle.
+func (s *DBProxy) Close() {
+    for _, dbh := s.dbh {
+        dbh.Close()
+    }
+}
+
 // Read Proxy DB Configure From File.
 // Initialize the DB Connection.
 // DBHandle Will Being Cover When DB Ident Is The Same.
 func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error {
     l, err := NewLoader("file")
-    fmt.Println(err)
+    //fmt.Println(err)
     fileList, err := l.GetList(p, ext, prefix)
     if err != nil {
         return err
