@@ -77,7 +77,7 @@ func NewDBProxy() *DBProxy {
 
 // Close DBProxy Handle.
 func (s *DBProxy) Close() {
-    for _, dbh := s.dbh {
+    for _, dbh := range s.dbh {
         dbh.Close()
     }
 }
