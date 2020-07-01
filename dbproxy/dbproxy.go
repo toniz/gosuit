@@ -218,7 +218,7 @@ func TransformRowData(rows *sql.Rows) ([]RowData, error) {
     }
 
     // Make a slice for the values
-    values := make([]string, len(columns))
+    values := make([]sql.NullString, len(columns))
 
     scanArgs := make([]interface{}, len(values))
     for i := range values {
@@ -237,7 +237,11 @@ func TransformRowData(rows *sql.Rows) ([]RowData, error) {
         // Here we just print each column as a string.
         data := make(RowData)
         for i, col := range values {
-            data[columns[i]] = col
+            if col.Valid {
+                data[columns[i]] = col.String
+            } else {
+                data[columns[i]] = ""
+            }
         }
 
         if rows.Err() == nil {
