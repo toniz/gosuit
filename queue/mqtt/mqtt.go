@@ -169,3 +169,9 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
 
 	return nil
 }
+
+func (c *Mqtt) Close() {
+    c.conn.Disconnect(250)
+}
+
+

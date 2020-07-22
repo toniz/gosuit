@@ -15,6 +15,7 @@ type MessageQueuer interface {
     Connect(endpoint string, user string, password string) error
     Worker(qname string, fn func([]byte) int) error
     SendTask(qname string, msg string) error
+    Close()
 }
 
 var (

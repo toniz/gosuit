@@ -159,3 +159,12 @@ func (c *RabbitMQ) Worker(qname string, fn func([]byte) int) error {
 
 	return nil
 }
+
+func (c *RabbitMQ) Close() {
+    for _, v := range c.chs {
+        v.Close()
+    }
+
+    c.conn.Close()
+}
+

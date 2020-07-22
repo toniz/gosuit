@@ -117,3 +117,8 @@ func (c *Kafka) Worker(topic string, fn func([]byte) int) error {
 
 	return nil
 }
+
+func (c *Kafka) Close() {
+
+}
+
