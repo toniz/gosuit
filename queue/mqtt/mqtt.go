@@ -173,7 +173,7 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
                 MessageID: incoming.MessageID(),
                 Payload: incoming.Payload(),
             }
-			res, _ := json.Marshal(Msg)
+			res, _ := json.Marshal(m)
 			if ret := fn([]byte(res)); ret == 1 {
 				if token := c.conn.Unsubscribe(topic); token.Wait() && token.Error() != nil {
 					log.Println(token.Error())
