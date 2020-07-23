@@ -20,7 +20,7 @@ type Msg struct {
     Retained  bool
     Topic     string
     MessageID uint16
-    Payload   []byte
+    Payload   string
 }
 
 type Mqtt struct {
@@ -171,7 +171,7 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
                 Retained: incoming.Retained(),
                 Topic: incoming.Topic(),
                 MessageID: incoming.MessageID(),
-                Payload: incoming.Payload(),
+                Payload: string(incoming.Payload()),
             }
 			res, _ := json.Marshal(m)
 			if ret := fn([]byte(res)); ret == 1 {
