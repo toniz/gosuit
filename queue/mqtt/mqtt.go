@@ -141,9 +141,9 @@ func (c *Mqtt) SendTask(topic string, msg string) error {
 }
 
 func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
-	choke := make(chan [2]string)
+	choke := make(chan Message)
 	h := func(client Client, msg Message) {
-		choke <- [2]string{msg.Topic(), string(msg.Payload())}
+		choke <- msg
 	}
 
 	if token := c.conn.Subscribe(topic, byte(c.mattServiceQuality), h); token.Wait() && token.Error() != nil {
@@ -155,7 +155,7 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
 		log.Printf("Start Goroutine: Worker ")
 		for {
 			incoming := <-choke
-			log.Printf("Received Topic: %s Message: %s", incoming[0], incoming[1])
+			log.Printf("Received Message: %v", incoming)
 			res, _ := json.Marshal(incoming)
 			if ret := fn([]byte(res)); ret == 1 {
 				if token := c.conn.Unsubscribe(topic); token.Wait() && token.Error() != nil {
