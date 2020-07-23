@@ -156,7 +156,7 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
 		for {
 			incoming := <-choke
 			log.Printf("Received Message: %v", incoming)
-			res, _ := json.Marshal(incoming)
+			res, _ := json.Marshal(*incoming)
 			if ret := fn([]byte(res)); ret == 1 {
 				if token := c.conn.Unsubscribe(topic); token.Wait() && token.Error() != nil {
 					log.Println(token.Error())
