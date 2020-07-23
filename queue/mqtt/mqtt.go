@@ -14,6 +14,15 @@ import (
 	"github.com/toniz/gosuit/queue"
 )
 
+type Msg struct {
+    Duplicate bool
+    Qos       byte
+    Retained  bool
+    Topic     string
+    MessageID uint16
+    Payload   []byte
+}
+
 type Mqtt struct {
 	clientID             string
 	keepAliveTime        time.Duration
@@ -156,7 +165,15 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
 		for {
 			incoming := <-choke
 			log.Printf("Received Message: %v", incoming)
-			res, _ := json.Marshal(*incoming)
+            m := Msg{
+                Duplicate: incoming.Duplicate(),
+                Qos: incoming.Qos(),
+                Retained: incoming.Retained(),
+                Topic: incoming.Topic(),
+                MessageID: incoming.MessageID(),
+                Payload: incoming.Payload(),
+            }
+			res, _ := json.Marshal(Msg)
 			if ret := fn([]byte(res)); ret == 1 {
 				if token := c.conn.Unsubscribe(topic); token.Wait() && token.Error() != nil {
 					log.Println(token.Error())
