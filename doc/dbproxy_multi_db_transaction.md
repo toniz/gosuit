@@ -34,8 +34,8 @@
 ## GUDP SQL Configure File:  
 ```json
 {
-    "t_user_insert_transaction" : 
     {
+        "ident": "t_user_insert_transaction", 
 	"sqlgroup": 
 	    [
             {
