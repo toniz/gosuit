@@ -7,8 +7,8 @@ package mqtt
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
+    "github.com/golang/glog"
 
 	. "github.com/eclipse/paho.mqtt.golang"
 	"github.com/toniz/gosuit/queue"
@@ -135,7 +135,7 @@ func (c *Mqtt) Connect(endpoint string, user string, password string) error {
 
 	mq := NewClient(c.opts)
 	if token := mq.Connect(); token.Wait() && token.Error() != nil {
-		log.Printf("Failed to connect mqtt: %v", c)
+		glog.Infof("Failed to connect mqtt: %v", c)
 		return token.Error()
 	}
 	c.conn = mq
@@ -156,15 +156,15 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
 	}
 
 	if token := c.conn.Subscribe(topic, byte(c.mattServiceQuality), h); token.Wait() && token.Error() != nil {
-		log.Printf("Failed to Subscribe Message: %v", token.Error())
+		glog.Infof("Failed to Subscribe Message: %v", token.Error())
 		return token.Error()
 	}
 
 	go func() {
-		log.Printf("Start Goroutine: Worker ")
+		glog.Infof("Start Goroutine: Worker ")
 		for {
 			incoming := <-choke
-			log.Printf("Received Message: %v", incoming)
+			glog.Infof("Received Message: %v", incoming)
             m := Msg{
                 Duplicate: incoming.Duplicate(),
                 Qos: incoming.Qos(),
@@ -176,9 +176,9 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
 			res, _ := json.Marshal(m)
 			if ret := fn([]byte(res)); ret == 1 {
 				if token := c.conn.Unsubscribe(topic); token.Wait() && token.Error() != nil {
-					log.Println(token.Error())
+					glog.Infoln(token.Error())
 				}
-				log.Printf("Callback Function Return Error And Exist: %d", ret)
+				glog.Infof("Callback Function Return Error And Exist: %d", ret)
 				break
 			}
 		}
