@@ -165,7 +165,7 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
 	if token := c.conn.Subscribe(topic, byte(c.mattServiceQuality), h); token.Wait() && token.Error() != nil {
 		glog.Infof("Failed to Subscribe Message: %v", token.Error())
 		return token.Error()
-	}
+	} else {
 
 	go func() {
 		glog.Infof("Start Goroutine: Worker ")
@@ -199,6 +199,7 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
 		}
 	}()
 
+    }
 	return nil
 }
 
