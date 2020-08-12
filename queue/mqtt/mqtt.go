@@ -191,7 +191,7 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
                     }
                 }
                 case <-time.After(c.subscribeTimeout): {
-                    glog.Warningf("Subscribe Timeout: %v", c.subscribeTimeout)
+                    glog.Warningf("Subscribe Timeout[%v]: %v", c.subscribeTimeout, token.Error())
                     fn([]byte("Timeout"))
                     break
                 }
