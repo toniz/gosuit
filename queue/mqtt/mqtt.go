@@ -32,6 +32,7 @@ type Mqtt struct {
 	connectTimeout       time.Duration
 	autoReconnect        bool
 	maxReconnectInterval time.Duration
+	subscribeTimeout     time.Duration
 
 	opts               *ClientOptions
 	conn               Client
@@ -55,6 +56,7 @@ func NewMqtt() *Mqtt {
 		keepAliveTime:        10 * time.Second,
 		clientID:             fmt.Sprintf("tl_server_%d", timestamp),
 		pingTimeout:          1 * time.Second,
+        subscribeTimeout:     180 * time.Second,
 
 		opts:               nil,
 		conn:               nil,
@@ -118,6 +120,11 @@ func (c *Mqtt) SetParameter(paramsMap map[string]interface{}) error {
 		}
 	}
 
+	if val, ok := paramsMap["subscribeTimeout"]; ok {
+		if _, ok = val.(int); ok {
+			c.subscribeTimeout = val.(time.Duration)
+		}
+	}
 	return nil
 }
 
@@ -163,24 +170,32 @@ func (c *Mqtt) Worker(topic string, fn func([]byte) int) error {
 	go func() {
 		glog.Infof("Start Goroutine: Worker ")
 		for {
-			incoming := <-choke
-			glog.Infof("Received Message: %v", incoming)
-            m := Msg{
-                Duplicate: incoming.Duplicate(),
-                Qos: incoming.Qos(),
-                Retained: incoming.Retained(),
-                Topic: incoming.Topic(),
-                MessageID: incoming.MessageID(),
-                Payload: string(incoming.Payload()),
+            select {
+                case incoming := <-choke: {
+                    glog.Infof("Received Message: %v", incoming)
+                    m := Msg{
+                        Duplicate: incoming.Duplicate(),
+                        Qos: incoming.Qos(),
+                        Retained: incoming.Retained(),
+                        Topic: incoming.Topic(),
+                        MessageID: incoming.MessageID(),
+                        Payload: string(incoming.Payload()),
+                    }
+                    res, _ := json.Marshal(m)
+                    if ret := fn([]byte(res)); ret == 1 {
+                        if token := c.conn.Unsubscribe(topic); token.Wait() && token.Error() != nil {
+                            glog.Infoln(token.Error())
+                        }
+                        glog.Infof("Callback Function Return Error And Exist: %d", ret)
+                        break
+                    }
+                }
+                case <-time.After(c.subscribeTimeout): {
+                    glog.Warningf("Subscribe Timeout: %v", c.subscribeTimeout)
+                    fn([]byte("Timeout"))
+                    break
+                }
             }
-			res, _ := json.Marshal(m)
-			if ret := fn([]byte(res)); ret == 1 {
-				if token := c.conn.Unsubscribe(topic); token.Wait() && token.Error() != nil {
-					glog.Infoln(token.Error())
-				}
-				glog.Infof("Callback Function Return Error And Exist: %d", ret)
-				break
-			}
 		}
 	}()
 
