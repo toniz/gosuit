@@ -55,7 +55,7 @@ func NewMqtt() *Mqtt {
 		autoReconnect:        true,
 		maxReconnectInterval: 10 * time.Minute,
 		keepAliveTime:        10 * time.Second,
-		clientID:             fmt.Sprintf("tl_server_%d", timestamp),
+		clientID:             fmt.Sprintf("gosuit_server_%d", timestamp),
 		pingTimeout:          1 * time.Second,
         subscribeTimeout:     180 * time.Second,
 
