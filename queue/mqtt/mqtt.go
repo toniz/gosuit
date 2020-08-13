@@ -28,6 +28,7 @@ type Mqtt struct {
 	keepAliveTime        time.Duration
 	pingTimeout          time.Duration
 	connectRetry         bool
+	cleanSession         bool
 	connectRetryInterval time.Duration
 	connectTimeout       time.Duration
 	autoReconnect        bool
