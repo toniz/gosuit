@@ -49,6 +49,7 @@ func NewMqtt() *Mqtt {
 	timestamp := time.Now().Unix()
 	return &Mqtt{
 		connectRetry:         false,
+		cleanSession:         true,
 		connectRetryInterval: 3 * time.Second,
 		connectTimeout:       10 * time.Second,
 		autoReconnect:        true,
@@ -69,6 +70,12 @@ func (c *Mqtt) SetParameter(paramsMap map[string]interface{}) error {
 	if val, ok := paramsMap["connectRetry"]; ok {
 		if _, ok = val.(bool); ok {
 			c.connectRetry = val.(bool)
+		}
+	}
+
+	if val, ok := paramsMap["cleanSession"]; ok {
+		if _, ok = val.(bool); ok {
+			c.cleanSession = val.(bool)
 		}
 	}
 
@@ -139,6 +146,7 @@ func (c *Mqtt) Connect(endpoint string, user string, password string) error {
 	//c.opts.SetConnectRetryInterval(c.connectRetryInterval)
 	c.opts.SetAutoReconnect(c.autoReconnect)
 	c.opts.SetMaxReconnectInterval(c.connectRetryInterval)
+	c.opts.SetCleanSession(c.cleanSession)
 
 	mq := NewClient(c.opts)
 	if token := mq.Connect(); token.Wait() && token.Error() != nil {
