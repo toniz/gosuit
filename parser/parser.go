@@ -8,6 +8,7 @@ package parser
 import (
     "errors"
 
+    "strings"
     "encoding/json"
     "encoding/xml"
     "gopkg.in/yaml.v2"
