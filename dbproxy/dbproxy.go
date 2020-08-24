@@ -172,7 +172,7 @@ func (s *DBProxy) AddProxySQLFromFile(p string, ext string, prefix string) error
         var result []ProxySQL
         err := l.Load(file, &result)
         if err != nil {
-            glog.Warningln("Load Json File Failed: ", err)
+            glog.Warningln("Load Json File[%v] Failed: ", file, err)
             continue
         }
 
