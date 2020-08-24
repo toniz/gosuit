@@ -18,9 +18,10 @@ func Decode(name string, text []byte, l interface{}) error {
     switch name {
     case "json", ".json":
     {
-        text = strings.Replace(text, "\n", " ", -1)
-        text = strings.Replace(text, "\r", " ", -1)
-        err := json.Unmarshal(text, l)
+        t := string(text)
+        t = strings.Replace(t, "\n", " ", -1)
+        t = strings.Replace(t, "\r", " ", -1)
+        err := json.Unmarshal([]byte(t), l)
         return err
     }
     case "xml", ".xml":
