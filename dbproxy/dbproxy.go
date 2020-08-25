@@ -52,6 +52,7 @@ type Statement struct {
 
 type ProxySQL struct {
     Ident string `json:"ident"`
+    IsoLevel string `json:"isolevel"`
     Statement
     SQLGroup []Statement `json:"sqlgroup"`
 }
@@ -333,6 +334,14 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
         err := errors.New(fmt.Sprintf("Error: [%s]Not Found In Configure..", ident))
         return nil, err
     }
+
+    isoLevel := sql.LevelDefault
+    isoInt, _ := atoi(s.sc[ident].IsoLevel)
+    if len(s.sc[ident].IsoLevel) != 0 {
+        isoInt, _ := atoi(s.sc[ident].IsoLevel)
+        isoLevel = IsolationLevel(isoInt)
+    }
+
     var txRes [][]RowData
     var err error
 
@@ -361,7 +370,7 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
                 break
             }
 
-            tx, err := dbh.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelDefault})
+            tx, err := dbh.BeginTx(ctx, &sql.TxOptions{Isolation: isoLevel})
             if err != nil {
                 err = errors.New(fmt.Sprintf("Warn: Set AutoCommit=0 Failed: " + dbname))
                 rollback = true
