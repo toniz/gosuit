@@ -14,7 +14,6 @@ import (
     "strconv"
     "strings"
     "time"
-    "strconv"
 
     "github.com/golang/glog"
 
@@ -337,9 +336,8 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
     }
 
     isoLevel := sql.LevelDefault
-    isoInt, _ := strconv.atoi(s.sc[ident].IsoLevel)
     if len(s.sc[ident].IsoLevel) != 0 {
-        isoInt, _ := strconv.atoi(s.sc[ident].IsoLevel)
+        isoInt, _ := strconv.Atoi(s.sc[ident].IsoLevel)
         isoLevel = sql.IsolationLevel(isoInt)
     }
 
