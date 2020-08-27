@@ -336,10 +336,10 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
     }
 
     isoLevel := sql.LevelDefault
-    isoInt, _ := atoi(s.sc[ident].IsoLevel)
+    isoInt, _ := strconv.atoi(s.sc[ident].IsoLevel)
     if len(s.sc[ident].IsoLevel) != 0 {
-        isoInt, _ := atoi(s.sc[ident].IsoLevel)
-        isoLevel = IsolationLevel(isoInt)
+        isoInt, _ := strconv.atoi(s.sc[ident].IsoLevel)
+        isoLevel = sql.IsolationLevel(isoInt)
     }
 
     var txRes [][]RowData
