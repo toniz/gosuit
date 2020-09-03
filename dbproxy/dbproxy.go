@@ -311,7 +311,7 @@ func (s *DBProxy) AutoCommit(ctx context.Context, ident string, params map[strin
         return nil, err
     }
 
-    glog.Infof("Ident[%s] Sql[%s] Dbname[%s]", ident, sqlc, dbname)
+    glog.V(1).Infof("Ident[%s] Sql[%s] Dbname[%s]", ident, sqlc, dbname)
     if dbh := s.dbh[dbname]; dbh != nil {
         rows, err := dbh.Query(sqlc)
         if err != nil {
@@ -382,7 +382,7 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
     // Exec db query
     if !rollback {
         for i, q := range sqls {
-            glog.Infof("Ident[%s] Exec [%s] Sql[%s] ", ident, dbs[i], q)
+            glog.V(1).Infof("Ident[%s] Exec [%s] Sql[%s] ", ident, dbs[i], q)
 
             rows, err := txs[dbs[i]].Query(q)
             if err != nil {
