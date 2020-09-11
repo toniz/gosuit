@@ -120,6 +120,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+    "flag"
 
 	"github.com/ethereumproject/go-ethereum/common"
 	"github.com/fatih/color"
@@ -641,12 +642,12 @@ var logging loggingT
 var display loggingT
 
 func init() {
-	//flag.BoolVar(&logging.toStderr, "logtostderr", false, "log to standard error instead of files")
-	//flag.BoolVar(&logging.alsoToStderr, "alsologtostderr", false, "log to standard error as well as files")
-	//flag.Var(&logging.verbosity, "v", "log level for V logs")
-	//flag.Var(&logging.stderrThreshold, "stderrthreshold", "logs at or above this threshold go to stderr")
-	//flag.Var(&logging.vmodule, "vmodule", "comma-separated list of pattern=N settings for file-filtered logging")
-	//flag.Var(&logging.traceLocation, "log_backtrace_at", "when logging hits line file:N, emit a stack trace")
+	flag.BoolVar(&logging.toStderr, "logtostderr", false, "log to standard error instead of files")
+	flag.BoolVar(&logging.alsoToStderr, "alsologtostderr", false, "log to standard error as well as files")
+	flag.Var(&logging.verbosity, "v", "log level for V logs")
+	flag.Var(&logging.stderrThreshold, "stderrthreshold", "logs at or above this threshold go to stderr")
+	flag.Var(&logging.vmodule, "vmodule", "comma-separated list of pattern=N settings for file-filtered logging")
+	flag.Var(&logging.traceLocation, "log_backtrace_at", "when logging hits line file:N, emit a stack trace")
 
 	logging.logTName = fileLog
 	// Default stderrThreshold is ERROR.
