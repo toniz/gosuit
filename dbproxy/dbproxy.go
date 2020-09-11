@@ -15,10 +15,12 @@ import (
     "strings"
     "time"
 
-    "github.com/golang/glog"
+    //"github.com/golang/glog"
 
     . "github.com/toniz/gosuit/loader"
     _ "github.com/toniz/gosuit/loader/fileloader"
+
+    "github.com/toniz/gosuit/glog"
 )
 
 type ProxyDB struct {

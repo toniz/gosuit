@@ -7,12 +7,15 @@ package parser
 
 import (
     "errors"
-    glog "github.com/golang/glog"
+    //glog "github.com/golang/glog"
 
     "strings"
     "encoding/json"
     "encoding/xml"
     "gopkg.in/yaml.v2"
+
+	"github.com/toniz/gosuit/glog"
+
 )
 
 func Decode(name string, text []byte, l interface{}) error {

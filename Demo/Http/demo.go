@@ -8,12 +8,13 @@ import (
     "encoding/json"
     "context"
     "fmt"
-    "github.com/golang/glog"
+    //"github.com/golang/glog"
 
     _ "github.com/go-sql-driver/mysql"
     _ "github.com/toniz/gosuit/queue/mqtt"
     . "github.com/toniz/gosuit/dbproxy"
     . "github.com/toniz/gosuit/queue"
+    "github.com/toniz/gosuit/glog"
 )
 
 var (

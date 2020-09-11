@@ -8,10 +8,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
-    "github.com/golang/glog"
+    //"github.com/golang/glog"
 
 	. "github.com/eclipse/paho.mqtt.golang"
 	"github.com/toniz/gosuit/queue"
+	"github.com/toniz/gosuit/glog"
 )
 
 type Msg struct {
