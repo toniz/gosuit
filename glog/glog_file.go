@@ -40,7 +40,7 @@ var logDirs []string
 // See createLogDirs for the full list of possible destinations.
 var logDir = flag.String("log-dir", "", "If non-empty, write log files in this directory")
 
-var logDir *string = new(string)
+//var logDir *string = new(string)
 
 func SetLogDir(str string) {
 	*logDir = str
