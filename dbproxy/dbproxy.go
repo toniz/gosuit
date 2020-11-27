@@ -302,6 +302,11 @@ func (s *DBProxy) ReplaceParameters(st Statement, params map[string]string) (str
 }
 
 func (s *DBProxy) AutoCommit(ctx context.Context, ident string, params map[string]string) ([]RowData, error) {
+    if len(s.sc) == 0 {
+        err := errors.New(fmt.Sprintf("Error: [%s] Configure Is Empty.", ident))
+        return nil, err
+    }
+
     if _, ok := s.sc[ident]; !ok {
         err := errors.New(fmt.Sprintf("Error: [%s]Not Found In Configure..", ident))
         return nil, err
@@ -332,6 +337,11 @@ func (s *DBProxy) AutoCommit(ctx context.Context, ident string, params map[strin
 }
 
 func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[string]string) ([][]RowData, error) {
+    if len(s.sc) == 0 {
+        err := errors.New(fmt.Sprintf("Error: [%s] Configure Is Empty.", ident))
+        return nil, err
+    }
+
     if _, ok := s.sc[ident]; !ok {
         err := errors.New(fmt.Sprintf("Error: [%s]Not Found In Configure..", ident))
         return nil, err
