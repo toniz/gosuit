@@ -367,6 +367,7 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
         dbs = append(dbs, dbname)
         sqls = append(sqls, sqlc)
     }
+    glog.V(2).Infof("Ident[%s] Exec DBs[%v] Sqls[%v] ", ident, dbs, sqls)
 
     // Get DB Handle, Then Set AutoCommit = false
     rollback := false
@@ -377,6 +378,7 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
             dbh := s.dbh[dbname]
             if dbh == nil {
                 err = errors.New(fmt.Sprintf("Error: [" + ident + "]No Such DB Handle." + dbname))
+                glog.Warningf("Ident[%s] Exec Failed: %v", ident, err)
                 rollback = true
                 break
             }
@@ -384,6 +386,7 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
             tx, err := dbh.BeginTx(ctx, &sql.TxOptions{Isolation: isoLevel})
             if err != nil {
                 err = errors.New(fmt.Sprintf("Warn: Set AutoCommit=0 Failed: " + dbname))
+                glog.Warningf("Ident[%s] Exec Failed: %v", ident, err)
                 rollback = true
                 break
             }
