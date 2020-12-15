@@ -14,9 +14,9 @@ import (
     "strconv"
     "strings"
     "time"
+    "sync"
 
     //"github.com/golang/glog"
-
     . "github.com/toniz/gosuit/loader"
     _ "github.com/toniz/gosuit/loader/fileloader"
 
@@ -65,17 +65,18 @@ type DBCheck struct {
 }
 
 type DBProxy struct {
+    rwlock *sync.RWMutex
     dbh map[string]*sql.DB
     sc  map[string]ProxySQL
 }
 
 type RowData map[string]string
-var mapWriteFlag bool = true
 
 // NewDBProxy creates a DBProxy.
 // Call loadConfigure To Load Configure Data
 func NewDBProxy() *DBProxy {
-    s := &DBProxy{dbh: make(map[string]*sql.DB), sc: make(map[string]ProxySQL)}
+    rwl := &sync.RWMutex{}
+    s := &DBProxy{dbh: make(map[string]*sql.DB), sc: make(map[string]ProxySQL), rwlock: rwl}
     return s
 }
 
@@ -90,12 +91,6 @@ func (s *DBProxy) Close() {
 // Initialize the DB Connection.
 // DBHandle Will Being Cover When DB Ident Is The Same.
 func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error {
-    if mapWriteFlag == false {
-        mapWriteFlag = true
-        time.Sleep(1)
-    }
-    defer mapWriteFlag = false
-
     l, err := NewLoader("file")
     //fmt.Println(err)
     fileList, err := l.GetList(p, ext, prefix)
@@ -103,6 +98,7 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
         return err
     }
 
+    dbHandle := make(map[string]*sql.DB)
     for _, file := range fileList {
         var result []ProxyDB
         err := l.Load(file, &result)
@@ -126,7 +122,7 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
                         connStr = c.User + `:` + c.Password + `@tcp(` + c.Endpoint + `)/` + c.DB + `?charset=` + c.Encoding + c.Variables
                     }
                 }
-                glog.Infoln("Loading Config Connect To: ", connStr)
+                glog.V(1).Infoln("Loading Config Connect To: ", connStr)
 
                 // Open DB Connection
                 db, err := sql.Open(c.Driver, connStr)
@@ -142,28 +138,38 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
                 }
 
                 // Check Is Exists.
-                if _, ok := s.dbh[c.Ident]; ok {
+                if _, ok := dbHandle[c.Ident]; ok {
                     glog.Warningln("ProxyDB Handle Has Being Conver: ", c)
-                    s.dbh[c.Ident].Close()
+                    dbHandle[c.Ident].Close()
                 }
-                s.dbh[c.Ident] = db
+                dbHandle[c.Ident] = db
 
                 // Set ConnMaxCnt
                 if c.Connection.MaxCount != 0 {
-                    s.dbh[c.Ident].SetMaxOpenConns(c.Connection.MaxCount)
+                    dbHandle[c.Ident].SetMaxOpenConns(c.Connection.MaxCount)
                 }
 
                 // Set ConnMaxLifetime
                 if c.Connection.MaxLifetime != 0 {
                     duration := strconv.Itoa(c.Connection.MaxLifetime)
                     if d, e := time.ParseDuration(duration + "s"); e == nil {
-                        s.dbh[c.Ident].SetConnMaxLifetime(d)
+                        dbHandle[c.Ident].SetConnMaxLifetime(d)
                     }
                 }
             } else {
                 glog.Warningln("Load Json File Not Found Ident: ", c)
             }
         }
+    }
+
+    s.rwlock.Lock()
+    defer s.rwlock.Unlock
+    glog.Infof("Load DB Configure From File[%d] dbh[%d]", len(dbHandle), len(s.dbh))
+    if len(dbHandle) > 0 {
+        for _, dbh := range s.dbh {
+            dbh.Close()
+        }
+        s.dbh = dbHandle
     }
 
     // fmt.Println(s.dbh)
@@ -173,18 +179,13 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
 // Add Proxy SQL Configure From File.
 // SQL Configure Will Being Cover. When SQL Ident Is The Same.
 func (s *DBProxy) AddProxySQLFromFile(p string, ext string, prefix string) error {
-    if mapWriteFlag == false {
-        mapWriteFlag = true
-        time.Sleep(1)
-    }
-    defer mapWriteFlag = false
-
     l, err := NewLoader("file")
     fileList, err := l.GetList(p, ext, prefix)
     if err != nil {
         return err
     }
 
+    sqlConfig := make(map[string]ProxySQL)
     for _, file := range fileList {
         var result []ProxySQL
         err := l.Load(file, &result)
@@ -195,14 +196,21 @@ func (s *DBProxy) AddProxySQLFromFile(p string, ext string, prefix string) error
 
         for _, c := range result {
             if len(c.Ident) > 0 {
-                if _, ok := s.sc[c.Ident]; ok {
+                if _, ok := sqlConfig[c.Ident]; ok {
                     glog.Warningln("ProxySQL Configure Has Being Conver: ", c)
                 }
-                s.sc[c.Ident] = c
+                sqlConfig[c.Ident] = c
             } else {
                 glog.Warningln("Load Json File Not Found Ident: ", c)
             }
         }
+    }
+
+    s.rwlock.Lock()
+    defer s.rwlock.Unlock
+    glog.Infof("Load SQL Configure From File[%d] dbh[%d]", len(sqlConfig), len(s.sc))
+    if len(sqlConfig) > 0 {
+        s.sc = sqlConfig
     }
 
     // fmt.Println(s.sc)
@@ -211,6 +219,9 @@ func (s *DBProxy) AddProxySQLFromFile(p string, ext string, prefix string) error
 
 // Get DB Handle By dbname
 func (s *DBProxy) GetDBHandle(dbname string) (dbh *sql.DB, err error) {
+    s.rwlock.RLock()
+    defer s.rwlock.RUnlock()
+
     dbh = s.dbh[dbname]
     if dbh == nil {
         err = errors.New("Not Found DB Handle")
@@ -316,10 +327,8 @@ func (s *DBProxy) ReplaceParameters(st Statement, params map[string]string) (str
 }
 
 func (s *DBProxy) AutoCommit(ctx context.Context, ident string, params map[string]string) ([]RowData, error) {
-    if mapWriteFlag {
-        err := errors.New(fmt.Sprintf("Error: [%s] Configure Is Init Now, Waiting.", ident))
-        return nil, err
-    }
+    s.rwlock.RLock()
+    defer s.rwlock.RUnlock()
 
     if s == nil {
         err := errors.New(fmt.Sprintf("Error: [%s] Configure Not Init.", ident))
@@ -356,10 +365,8 @@ func (s *DBProxy) AutoCommit(ctx context.Context, ident string, params map[strin
 }
 
 func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[string]string) ([][]RowData, error) {
-    if mapWriteFlag {
-        err := errors.New(fmt.Sprintf("Error: [%s] Configure Is Init Now, Waiting.", ident))
-        return nil, err
-    }
+    s.rwlock.RLock()
+    defer s.rwlock.RUnlock()
 
     if s == nil {
         err := errors.New(fmt.Sprintf("Error: [%s] Configure Not Init.", ident))
