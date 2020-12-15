@@ -70,6 +70,7 @@ type DBProxy struct {
 }
 
 type RowData map[string]string
+var mapWriteFlag bool = true
 
 // NewDBProxy creates a DBProxy.
 // Call loadConfigure To Load Configure Data
@@ -89,6 +90,10 @@ func (s *DBProxy) Close() {
 // Initialize the DB Connection.
 // DBHandle Will Being Cover When DB Ident Is The Same.
 func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error {
+    mapWriteFlag = true
+    defer mapWriteFlag = false
+    time.Sleep(1)
+
     l, err := NewLoader("file")
     //fmt.Println(err)
     fileList, err := l.GetList(p, ext, prefix)
@@ -137,6 +142,7 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
                 // Check Is Exists.
                 if _, ok := s.dbh[c.Ident]; ok {
                     glog.Warningln("ProxyDB Handle Has Being Conver: ", c)
+                    s.dbh[c.Ident].Close()
                 }
                 s.dbh[c.Ident] = db
 
@@ -165,6 +171,10 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
 // Add Proxy SQL Configure From File.
 // SQL Configure Will Being Cover. When SQL Ident Is The Same.
 func (s *DBProxy) AddProxySQLFromFile(p string, ext string, prefix string) error {
+    mapWriteFlag = true
+    defer mapWriteFlag = false
+    time.Sleep(1)
+
     l, err := NewLoader("file")
     fileList, err := l.GetList(p, ext, prefix)
     if err != nil {
@@ -302,6 +312,11 @@ func (s *DBProxy) ReplaceParameters(st Statement, params map[string]string) (str
 }
 
 func (s *DBProxy) AutoCommit(ctx context.Context, ident string, params map[string]string) ([]RowData, error) {
+    if mapWriteFlag {
+        err := errors.New(fmt.Sprintf("Error: [%s] Configure Is Init Now, Waiting.", ident))
+        return nil, err
+    }
+
     if s == nil {
         err := errors.New(fmt.Sprintf("Error: [%s] Configure Not Init.", ident))
         return nil, err
@@ -337,6 +352,11 @@ func (s *DBProxy) AutoCommit(ctx context.Context, ident string, params map[strin
 }
 
 func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[string]string) ([][]RowData, error) {
+    if mapWriteFlag {
+        err := errors.New(fmt.Sprintf("Error: [%s] Configure Is Init Now, Waiting.", ident))
+        return nil, err
+    }
+
     if s == nil {
         err := errors.New(fmt.Sprintf("Error: [%s] Configure Not Init.", ident))
         return nil, err
