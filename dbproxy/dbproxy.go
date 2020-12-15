@@ -90,9 +90,11 @@ func (s *DBProxy) Close() {
 // Initialize the DB Connection.
 // DBHandle Will Being Cover When DB Ident Is The Same.
 func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error {
-    mapWriteFlag = true
+    if mapWriteFlag == false {
+        mapWriteFlag = true
+        time.Sleep(1)
+    }
     defer mapWriteFlag = false
-    time.Sleep(1)
 
     l, err := NewLoader("file")
     //fmt.Println(err)
@@ -171,9 +173,11 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
 // Add Proxy SQL Configure From File.
 // SQL Configure Will Being Cover. When SQL Ident Is The Same.
 func (s *DBProxy) AddProxySQLFromFile(p string, ext string, prefix string) error {
-    mapWriteFlag = true
+    if mapWriteFlag == false {
+        mapWriteFlag = true
+        time.Sleep(1)
+    }
     defer mapWriteFlag = false
-    time.Sleep(1)
 
     l, err := NewLoader("file")
     fileList, err := l.GetList(p, ext, prefix)
