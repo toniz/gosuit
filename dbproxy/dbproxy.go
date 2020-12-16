@@ -163,7 +163,7 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
     }
 
     s.rwlock.Lock()
-    defer s.rwlock.Unlock
+    defer s.rwlock.Unlock()
     glog.Infof("Load DB Configure From File[%d] dbh[%d]", len(dbHandle), len(s.dbh))
     if len(dbHandle) > 0 {
         for _, dbh := range s.dbh {
@@ -207,7 +207,7 @@ func (s *DBProxy) AddProxySQLFromFile(p string, ext string, prefix string) error
     }
 
     s.rwlock.Lock()
-    defer s.rwlock.Unlock
+    defer s.rwlock.Unlock()
     glog.Infof("Load SQL Configure From File[%d] dbh[%d]", len(sqlConfig), len(s.sc))
     if len(sqlConfig) > 0 {
         s.sc = sqlConfig
