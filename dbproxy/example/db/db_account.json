@@ -2,7 +2,7 @@
     {
         "ident": "db_account_w",
         "driver": "mysql",
-        "db" : "auth",
+        "db" : "ibbwhat",
         "user" : "bbthis",
         "password" : "123456",
         "endpoint" : "127.0.0.1:3306",
@@ -16,7 +16,7 @@
     {
         "ident" : "db_account_r",
         "driver": "mysql",
-        "db" : "auth",
+        "db" : "ibbwhat",
         "user" : "bbthis",
         "password" : "123456",
         "endpoint" : "127.0.0.1:3306",

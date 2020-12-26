@@ -1,7 +1,7 @@
 [
     {
         "ident": "db_account_0",
-        "name" : "auth",
+        "name" : "ibbwhat",
         "user" : "bbthis",
         "password" : "123456",
         "endpoint" : "127.0.0.1:3306",
@@ -9,7 +9,7 @@
     },
     {
         "ident": "db_account_1",
-        "name" : "auth",
+        "name" : "ibbwhat",
         "user" : "bbthis",
         "password" : "123456",
         "endpoint" : "127.0.0.1:3306",

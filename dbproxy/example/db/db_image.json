@@ -2,7 +2,7 @@
     {
         "ident": "db_image_w",
         "balancer" : "BAL_DB_IMAGE_W",
-        "db" : "auth",
+        "db" : "ibbwhat",
         "user" : "bbthis",
         "password" : "123456",
         "endpoint" : "127.0.0.1:3306",
@@ -13,7 +13,7 @@
     {
         "ident": "db_image_r",
         "balancer" : "BAL_DB_IMAGE_R",
-        "db" : "auth",
+        "db" : "ibbwhat",
         "user" : "bbthis",
         "password" : "123456",
         "endpoint" : "127.0.0.1:3306",
