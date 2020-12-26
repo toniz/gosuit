@@ -2,10 +2,10 @@
     {
         "ident": "db_account_w",
         "driver": "mysql",
-        "db" : "ibbwhat",
-        "user" : "ibbwhat",
+        "db" : "auth",
+        "user" : "bbthis",
         "password" : "123456",
-        "endpoint" : "10.107.152.167:3306",
+        "endpoint" : "127.0.0.1:3306",
         "encoding" : "utf8,utf8mb4a",
         "connection" : {
             "maxcount" : 100,
@@ -16,10 +16,10 @@
     {
         "ident" : "db_account_r",
         "driver": "mysql",
-        "db" : "ibbwhat",
-        "user" : "ibbwhat",
+        "db" : "auth",
+        "user" : "bbthis",
         "password" : "123456",
-        "endpoint" : "10.107.152.167:3306",
+        "endpoint" : "127.0.0.1:3306",
         "encoding" : "utf8,utf8mb4",
         "connection" : {
             "maxcount" : 100,
