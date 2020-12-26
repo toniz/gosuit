@@ -15,6 +15,7 @@ import (
     "strings"
     "time"
     "sync"
+    "reflect"
 
     //"github.com/golang/glog"
     . "github.com/toniz/gosuit/loader"
@@ -68,6 +69,7 @@ type DBProxy struct {
     rwlock *sync.RWMutex
     dbh map[string]*sql.DB
     sc  map[string]ProxySQL
+    dbc  map[string]ProxyDB
 }
 
 type RowData map[string]string
@@ -76,7 +78,11 @@ type RowData map[string]string
 // Call loadConfigure To Load Configure Data
 func NewDBProxy() *DBProxy {
     rwl := &sync.RWMutex{}
-    s := &DBProxy{dbh: make(map[string]*sql.DB), sc: make(map[string]ProxySQL), rwlock: rwl}
+    s := &DBProxy{
+        dbh: make(map[string]*sql.DB),
+        dbc: make(map[string]ProxyDB),
+        sc: make(map[string]ProxySQL),
+        rwlock: rwl}
     return s
 }
 
@@ -98,80 +104,88 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
         return err
     }
 
-    dbHandle := make(map[string]*sql.DB)
+    dbConfig := make(map[string]ProxyDB)
     for _, file := range fileList {
         var result []ProxyDB
         err := l.Load(file, &result)
         if err != nil {
-            glog.Warningln("Load Json File Failed: ", err)
+            glog.Warningf("Load Json File[%v] Failed: %v", file, err)
             continue
         }
 
-        for _, c := range result {
-            if len(c.Ident) > 0 {
-                // Construct Connect String
-                var connStr string
-                switch c.Driver {
-                case "postgres":
-                    {
-                        connStr = "postgres://" + c.User + ":" + c.Password + "@" + c.Endpoint + "/" + c.DB + "?sslmode=disable"
-                    }
-                default:
-                    {
-                        c.Driver = "mysql"
-                        connStr = c.User + `:` + c.Password + `@tcp(` + c.Endpoint + `)/` + c.DB + `?charset=` + c.Encoding + c.Variables
-                    }
-                }
-                glog.V(1).Infoln("Loading Config Connect To: ", connStr)
-
-                // Open DB Connection
-                db, err := sql.Open(c.Driver, connStr)
-                if err != nil {
-                    glog.Warningf("DB[%s] Connect Failed [%s]: %v", c.Ident, connStr, err)
-                    continue
-                }
-
-                // DB Ping
-                if err = db.Ping(); err != nil {
-                    glog.Warningf("DB[%s] Ping Failed [%s]: %v", c.Ident, connStr, err)
-                    continue
-                }
-
-                // Check Is Exists.
-                if _, ok := dbHandle[c.Ident]; ok {
-                    glog.Warningln("ProxyDB Handle Has Being Conver: ", c)
-                    dbHandle[c.Ident].Close()
-                }
-                dbHandle[c.Ident] = db
-
-                // Set ConnMaxCnt
-                if c.Connection.MaxCount != 0 {
-                    dbHandle[c.Ident].SetMaxOpenConns(c.Connection.MaxCount)
-                }
-
-                // Set ConnMaxLifetime
-                if c.Connection.MaxLifetime != 0 {
-                    duration := strconv.Itoa(c.Connection.MaxLifetime)
-                    if d, e := time.ParseDuration(duration + "s"); e == nil {
-                        dbHandle[c.Ident].SetConnMaxLifetime(d)
-                    }
-                }
+        for _, cnf := range result {
+            if len(cnf.Ident) > 0 {
+                dbConfig[cnf.Ident] = cnf
             } else {
-                glog.Warningln("Load Json File Not Found Ident: ", c)
+                glog.Warningln("Load Json File Not Found Ident: ", cnf)
             }
         }
     }
 
-    s.rwlock.Lock()
-    defer s.rwlock.Unlock()
-    glog.Infof("Load DB Configure From File[%d] dbh[%d]", len(dbHandle), len(s.dbh))
-    if len(dbHandle) > 0 {
-        for _, dbh := range s.dbh {
-            dbh.Close()
+    updateDBH := false
+    s.rwlock.RLock()
+    if !reflect.DeepEqual(s.dbc, dbConfig) {
+        for k, v := range dbConfig {
+            s.dbc[k] = v
         }
-        s.dbh = dbHandle
+        updateDBH = true
     }
+    s.rwlock.RUnlock()
 
+    if updateDBH {
+        dbHandle := make(map[string]*sql.DB)
+        for k, c := range s.dbc {
+            // Construct Connect String
+            var connStr string
+            switch c.Driver {
+                case "postgres": {
+                    connStr = "postgres://" + c.User + ":" + c.Password + "@" + c.Endpoint + "/" + c.DB + "?sslmode=disable"
+                }
+                default: {
+                    c.Driver = "mysql"
+                    connStr = c.User + `:` + c.Password + `@tcp(` + c.Endpoint + `)/` + c.DB + `?charset=` + c.Encoding + c.Variables
+                }
+            }
+            glog.Infof("Loading Config Connect To [%s]: %v ", k, connStr)
+
+            // Open DB Connection
+            db, err := sql.Open(c.Driver, connStr)
+            if err != nil {
+                glog.Warningf("DB[%s] Connect Failed [%s]: %v", k, connStr, err)
+                continue
+            }
+
+            // DB Ping
+            if err = db.Ping(); err != nil {
+                glog.Warningf("DB[%s] Ping Failed [%s]: %v", k, connStr, err)
+                continue
+            }
+
+            dbHandle[k] = db
+            // Set ConnMaxCnt
+            if c.Connection.MaxCount != 0 {
+                dbHandle[k].SetMaxOpenConns(c.Connection.MaxCount)
+            }
+
+            // Set ConnMaxLifetime
+            if c.Connection.MaxLifetime != 0 {
+                duration := strconv.Itoa(c.Connection.MaxLifetime)
+                if d, e := time.ParseDuration(duration + "s"); e == nil {
+                    dbHandle[k].SetConnMaxLifetime(d)
+                }
+            }
+        }
+
+        s.rwlock.Lock()
+        defer s.rwlock.Unlock()
+        glog.Infof("Load DB Configure From File[%d] dbh[%d]", len(dbHandle), len(s.dbh))
+        if len(dbHandle) > 0 {
+            for _, dbh := range s.dbh {
+                dbh.Close()
+            }
+            s.dbh = dbHandle
+        }
+    }
     // fmt.Println(s.dbh)
     return nil
 }
@@ -190,29 +204,28 @@ func (s *DBProxy) AddProxySQLFromFile(p string, ext string, prefix string) error
         var result []ProxySQL
         err := l.Load(file, &result)
         if err != nil {
-            glog.Warningln("Load Json File[%v] Failed: ", file, err)
+            glog.Warningf("Load Json File[%v] Failed: %v", file, err)
             continue
         }
 
-        for _, c := range result {
-            if len(c.Ident) > 0 {
-                if _, ok := sqlConfig[c.Ident]; ok {
-                    glog.Warningln("ProxySQL Configure Has Being Conver: ", c)
-                }
-                sqlConfig[c.Ident] = c
+        for _, cnf := range result {
+            if len(cnf.Ident) > 0 {
+                sqlConfig[cnf.Ident] = cnf
             } else {
-                glog.Warningln("Load Json File Not Found Ident: ", c)
+                glog.Warningln("Load Json File Not Found Ident: ", cnf)
             }
         }
     }
 
     s.rwlock.Lock()
     defer s.rwlock.Unlock()
-    glog.Infof("Load SQL Configure From File[%d] dbh[%d]", len(sqlConfig), len(s.sc))
-    if len(sqlConfig) > 0 {
-        s.sc = sqlConfig
+    if !reflect.DeepEqual(s.sc, sqlConfig) {
+        for k, v := range sqlConfig {
+            s.sc[k] = v
+        }
+        keys := reflect.ValueOf(s.sc).MapKeys()
+        glog.Infof("SQL Configure Refresh From File[%d] sc[%d]: %v", len(sqlConfig), len(s.sc), keys)
     }
-
     // fmt.Println(s.sc)
     return nil
 }
