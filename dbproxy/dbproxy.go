@@ -477,7 +477,8 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
 func (s *DBProxy) MultiInsert(ctx context.Context, ident string, values []string) error {
     valueString := strings.Join(values, ",")
     params := map[string]string{"VALUES": valueString}
-    return s.AutoCommit(ctx, ident, params)
+    _, err := s.AutoCommit(ctx, ident, params)
+    return err
 }
 
 
