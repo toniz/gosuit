@@ -474,9 +474,17 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
     return txRes, err
 }
 
-func (s *DBProxy) MultiInsert(ctx context.Context, ident string, values []string) error {
-    valueString := strings.Join(values, ",")
-    params := map[string]string{"VALUES": valueString}
+func (s *DBProxy) MultiInsert(ctx context.Context, ident string, values [][]string) error {
+    var insRows string
+    for i, row := range values {
+        rowStr := strings.Join(row,"', '")
+        rowStr = "('" + rowStr + "')"
+        if i != 0  {
+            insRows = insRows + ", "
+        }
+        insRows = insRows + rowStr
+    }
+    params := map[string]string{"VALUES": insRows}
     _, err := s.AutoCommit(ctx, ident, params)
     return err
 }
