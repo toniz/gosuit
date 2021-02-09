@@ -146,7 +146,7 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
                     connStr = c.User + `:` + c.Password + `@tcp(` + c.Endpoint + `)/` + c.DB + `?charset=` + c.Encoding + c.Variables
                 }
             }
-            glog.Infof("Loading Config Connect To [%s]: %v ", k, connStr)
+            glog.V(11).Infof("Loading Config Connect To [%s]: %v ", k, connStr)
 
             // Open DB Connection
             db, err := sql.Open(c.Driver, connStr)
@@ -178,7 +178,7 @@ func (s *DBProxy) AddDBHandleFromFile(p string, ext string, prefix string) error
 
         s.rwlock.Lock()
         defer s.rwlock.Unlock()
-        glog.Infof("Load DB Configure From File[%d] dbh[%d]", len(dbHandle), len(s.dbh))
+        glog.V(11).Infof("Load DB Configure From File[%d] dbh[%d]", len(dbHandle), len(s.dbh))
         if len(dbHandle) > 0 {
             for _, dbh := range s.dbh {
                 dbh.Close()
@@ -224,7 +224,7 @@ func (s *DBProxy) AddProxySQLFromFile(p string, ext string, prefix string) error
             s.sc[k] = v
         }
         keys := reflect.ValueOf(s.sc).MapKeys()
-        glog.Infof("SQL Configure Refresh From File[%d] sc[%d]: %v", len(sqlConfig), len(s.sc), keys)
+        glog.V(10).Infof("SQL Configure Refresh From File[%d] sc[%d]: %v", len(sqlConfig), len(s.sc), keys)
     }
     // fmt.Println(s.sc)
     return nil
@@ -359,7 +359,7 @@ func (s *DBProxy) AutoCommit(ctx context.Context, ident string, params map[strin
         return nil, err
     }
 
-    glog.V(1).Infof("Ident[%s] Sql[%s] Dbname[%s]", ident, sqlc, dbname)
+    glog.V(11).Infof("Ident[%s] Sql[%s] Dbname[%s]", ident, sqlc, dbname)
     if dbh := s.dbh[dbname]; dbh != nil {
         rows, err := dbh.Query(sqlc)
         if err != nil {
@@ -411,7 +411,7 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
         dbs = append(dbs, dbname)
         sqls = append(sqls, sqlc)
     }
-    glog.V(2).Infof("Ident[%s] Exec DBs[%v] Sqls[%v] ", ident, dbs, sqls)
+    glog.V(12).Infof("Ident[%s] Exec DBs[%v] Sqls[%v] ", ident, dbs, sqls)
 
     // Get DB Handle, Then Set AutoCommit = false
     rollback := false
@@ -441,7 +441,7 @@ func (s *DBProxy) TransCommit(ctx context.Context, ident string, gparams []map[s
     // Exec db query
     if !rollback {
         for i, q := range sqls {
-            glog.V(1).Infof("Ident[%s] Exec [%s] Sql[%s] ", ident, dbs[i], q)
+            glog.V(11).Infof("Ident[%s] Exec [%s] Sql[%s] ", ident, dbs[i], q)
 
             rows, err := txs[dbs[i]].Query(q)
             if err != nil {
