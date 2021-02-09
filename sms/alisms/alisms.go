@@ -42,7 +42,10 @@ func (c *AliSms) SendSms(phone string, sign string, templateCode string, templat
     strRequest := fmt.Sprintln(request)
     response, errSms := client.SendSms(request)
     if errSms == nil {
-         strResponse = fmt.Sprintln(response)
+        strResponse = fmt.Sprintln(response)
+        if response.Code != "OK" {
+            errSms = errors.New(fmt.Sprintf("Gateway Return Failed!"))
+        }
     }
 
     return strRequest, strResponse, errSms

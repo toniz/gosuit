@@ -1,11 +1,11 @@
-package glog // import "google.golang.org/grpc/internal/grpclog"
+package glog // import "google.golang.org/grpc/internal/logger"
 
 import (
     "os"
 )
 
-// LoggerV2 does underlying logging work for grpclog.
-// This is a copy of the LoggerV2 defined in the external grpclog package. It
+// LoggerV2 does underlying logging work for logger.
+// This is a copy of the LoggerV2 defined in the external logger package. It
 // is defined here to avoid a circular dependency.
 type TLogger interface {
     // Info logs to INFO log. Arguments are handled in the manner of fmt.Print.
@@ -42,75 +42,67 @@ type TLogger interface {
     V(l int) bool
 }
 
-var logger = func() TLogger)
+var logger TLogger
 
-func Register(name string, logger func() TLogger) {
-    logger
+func SetLogger(l TLogger) {
+    logger = l
 }
 
-func NewLogger(name string) (s TLogger, err error) {
-    if f, ok := namelogger[name]; ok {
-        s = f()
-    } else {
-        err = errors.New(fmt.Sprintf("Logger name %s not recognized!", name))
-    }
-    return
-}
 
 // V reports whether verbosity level l is at least the requested verbose level.
 func V(l int) bool {
-    return grpclog.Logger.V(l)
+    return logger.V(l)
 }
 
 // Info logs to the INFO log.
 func Info(args ...interface{}) {
-    grpclog.Logger.Info(args...)
+    logger.Info(args...)
 }
 
 // Infof logs to the INFO log. Arguments are handled in the manner of fmt.Printf.
 func Infof(format string, args ...interface{}) {
-    grpclog.Logger.Infof(format, args...)
+    logger.Infof(format, args...)
 }
 
 // Infoln logs to the INFO log. Arguments are handled in the manner of fmt.Println.
 func Infoln(args ...interface{}) {
-    grpclog.Logger.Infoln(args...)
+    logger.Infoln(args...)
 }
 
 // Warning logs to the WARNING log.
 func Warning(args ...interface{}) {
-    grpclog.Logger.Warning(args...)
+    logger.Warning(args...)
 }
 
 // Warningf logs to the WARNING log. Arguments are handled in the manner of fmt.Printf.
 func Warningf(format string, args ...interface{}) {
-    grpclog.Logger.Warningf(format, args...)
+    logger.Warningf(format, args...)
 }
 
 // Warningln logs to the WARNING log. Arguments are handled in the manner of fmt.Println.
 func Warningln(args ...interface{}) {
-    grpclog.Logger.Warningln(args...)
+    logger.Warningln(args...)
 }
 
 // Error logs to the ERROR log.
 func Error(args ...interface{}) {
-    grpclog.Logger.Error(args...)
+    logger.Error(args...)
 }
 
 // Errorf logs to the ERROR log. Arguments are handled in the manner of fmt.Printf.
 func Errorf(format string, args ...interface{}) {
-    grpclog.Logger.Errorf(format, args...)
+    logger.Errorf(format, args...)
 }
 
 // Errorln logs to the ERROR log. Arguments are handled in the manner of fmt.Println.
 func Errorln(args ...interface{}) {
-    grpclog.Logger.Errorln(args...)
+    logger.Errorln(args...)
 }
 
 // Fatal logs to the FATAL log. Arguments are handled in the manner of fmt.Print.
 // It calls os.Exit() with exit code 1.
 func Fatal(args ...interface{}) {
-    grpclog.Logger.Fatal(args...)
+    logger.Fatal(args...)
     // Make sure fatal logs will exit.
     os.Exit(1)
 }
@@ -118,7 +110,7 @@ func Fatal(args ...interface{}) {
 // Fatalf logs to the FATAL log. Arguments are handled in the manner of fmt.Printf.
 // It calls os.Exit() with exit code 1.
 func Fatalf(format string, args ...interface{}) {
-    grpclog.Logger.Fatalf(format, args...)
+    logger.Fatalf(format, args...)
     // Make sure fatal logs will exit.
     os.Exit(1)
 }
@@ -126,7 +118,7 @@ func Fatalf(format string, args ...interface{}) {
 // Fatalln logs to the FATAL log. Arguments are handled in the manner of fmt.Println.
 // It calle os.Exit()) with exit code 1.
 func Fatalln(args ...interface{}) {
-    grpclog.Logger.Fatalln(args...)
+    logger.Fatalln(args...)
     // Make sure fatal logs will exit.
     os.Exit(1)
 }
@@ -135,19 +127,19 @@ func Fatalln(args ...interface{}) {
 //
 // Deprecated: use Info.
 func Print(args ...interface{}) {
-    grpclog.Logger.Info(args...)
+    logger.Info(args...)
 }
 
 // Printf prints to the logger. Arguments are handled in the manner of fmt.Printf.
 //
 // Deprecated: use Infof.
 func Printf(format string, args ...interface{}) {
-    grpclog.Logger.Infof(format, args...)
+    logger.Infof(format, args...)
 }
 
 // Println prints to the logger. Arguments are handled in the manner of fmt.Println.
 //
 // Deprecated: use Infoln.
 func Println(args ...interface{}) {
-    grpclog.Logger.Infoln(args...)
+    logger.Infoln(args...)
 }
