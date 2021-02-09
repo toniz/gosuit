@@ -5,8 +5,8 @@
 package ailsms
 
 import (
-	"context"
-	"io"
+    "fmt"
+    "errors"
 
     "github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
 	"github.com/toniz/gosuit/sms"
@@ -23,9 +23,9 @@ func init() {
 }
 
 // Create Sms Client Handler
-func (c *AliSms) Connect(regionId string, accessKeyID string, secretAccessKey string) error {
+func (c *AliSms) Connect(regionId string, accessKeyId string, accessKeySecret string) error {
 	var err error
-    c.client, errSms := dysmsapi.NewClientWithAccessKey(regionId, accessKeyId, accessKeySecret)
+    c.client, errSms = dysmsapi.NewClientWithAccessKey(regionId, accessKeyId, accessKeySecret)
 	return errSms
 }
 
@@ -40,7 +40,7 @@ func (c *AliSms) SendSms(phone string, sign string, templateCode string, templat
 
     strResponse := ""
     strRequest := fmt.Sprintln(request)
-    response, errSms := client.SendSms(request)
+    response, errSms := c.client.SendSms(request)
     if errSms == nil {
         strResponse = fmt.Sprintln(response)
         if response.Code != "OK" {

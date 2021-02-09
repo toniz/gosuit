@@ -50,7 +50,7 @@ func SetLogger(l TLogger) {
 
 
 // V reports whether verbosity level l is at least the requested verbose level.
-func V(l int) bool {
+func V(l int) TLogger {
     return logger.V(l)
 }
 
