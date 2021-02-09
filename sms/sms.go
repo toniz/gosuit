@@ -5,8 +5,6 @@
 package sms
 
 import (
-    "context"
-    "io"
     "errors"
     "fmt"
 )

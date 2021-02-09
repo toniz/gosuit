@@ -60,8 +60,8 @@ func (LogV2 *) Fatalf(format string, args ...interface{}){
     glog.Fatalf(format string, args ...interface{})
 }
 
-func (LogV2 *) V(l int) bool{
-    glog.V(l int)
+func (LogV2 *) V(l int) glog.Verbose {
+    return glog.V(l int)
 }
 
 
