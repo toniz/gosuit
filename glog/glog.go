@@ -5,7 +5,7 @@ import (
 )
 
 type TLogger interface {
-    V(level Level) Verbose
+    V(l int) Verboser
     Info(args ...interface{})
     Infoln(args ...interface{})
     Infof(format string, args ...interface{})
