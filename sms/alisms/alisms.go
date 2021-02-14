@@ -24,7 +24,7 @@ func init() {
 
 // Create Sms Client Handler
 func (c *AliSms) Connect(regionId string, accessKeyId string, accessKeySecret string) error {
-	var err error
+	var errSms error
     c.client, errSms = dysmsapi.NewClientWithAccessKey(regionId, accessKeyId, accessKeySecret)
 	return errSms
 }
@@ -36,7 +36,7 @@ func (c *AliSms) SendSms(phone string, sign string, templateCode string, templat
     request.PhoneNumbers = phone
     request.SignName = sign
     request.TemplateCode = templateCode
-    request.TemplateParam = templatePara
+    request.TemplateParam = templateParam
 
     strResponse := ""
     strRequest := fmt.Sprintln(request)
