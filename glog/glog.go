@@ -24,6 +24,12 @@ type TLogger interface {
     Flush()
 }
 
+type Verboser interface {
+    Info(args ...interface{})
+    Infoln(args ...interface{})
+    Infof(format string, args ...interface{})
+}
+
 var logger TLogger
 
 func SetLogger(l TLogger) {
@@ -31,7 +37,7 @@ func SetLogger(l TLogger) {
 }
 
 // V reports whether verbosity level l is at least the requested verbose level.
-func V(l int) Verbose {
+func V(l int) Verboser {
     return logger.V(l)
 }
 
@@ -110,27 +116,6 @@ func Fatalln(args ...interface{}) {
     os.Exit(1)
 }
 
-// Print prints to the logger. Arguments are handled in the manner of fmt.Print.
-//
-// Deprecated: use Info.
-func Print(args ...interface{}) {
-    logger.Info(args...)
-}
-
-// Printf prints to the logger. Arguments are handled in the manner of fmt.Printf.
-//
-// Deprecated: use Infof.
-func Printf(format string, args ...interface{}) {
-    logger.Infof(format, args...)
-}
-
-// Println prints to the logger. Arguments are handled in the manner of fmt.Println.
-//
-// Deprecated: use Infoln.
-func Println(args ...interface{}) {
-    logger.Infoln(args...)
-}
-
 // Exit logs to the FATAL log. Arguments are handled in the manner of fmt.Print.
 // It calls os.Exit() with exit code 1.
 func Exit(args ...interface{}) {
@@ -154,8 +139,5 @@ func Exitln(args ...interface{}) {
     // Make sure fatal logs will exit.
     os.Exit(1)
 }
-
-
-
 
 
