@@ -42,7 +42,7 @@ func V(l int) Verboser {
 }
 
  // Flush flushes all pending log I/O.
-func  Flush() {
+func Flush() {
     logger.Flush()
     return
 }

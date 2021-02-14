@@ -13,6 +13,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
+    _ "github.com/toniz/gosuit/glog/ethereum/glog"
 	. "github.com/toniz/gosuit/dbproxy"
 )
 
