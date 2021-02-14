@@ -39,7 +39,7 @@ type TLogger interface {
     // Implementations may also call os.Exit() with a non-zero exit code.
     Fatalf(format string, args ...interface{})
     // V reports whether verbosity level l is at least the requested verbose level.
-    V(l int) bool
+    V(l int) TLogger
 }
 
 var logger TLogger
