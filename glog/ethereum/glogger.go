@@ -60,6 +60,18 @@ func (LogV2 *) Fatalf(format string, args ...interface{}){
     glog.Fatalf(format string, args ...interface{})
 }
 
+func (LogV2 *) Exit(args ...interface{}){
+    glog.Exit(args ...interface{})
+}
+
+func (LogV2 *) Exitln(args ...interface{}){
+    glog.Exitln(args ...interface{})
+}
+
+func (LogV2 *) Exitf(format string, args ...interface{}){
+    glog.Exitf(format string, args ...interface{})
+}
+
 func (LogV2 *) V(l int) glog.Verbose {
     return glog.V(l int)
 }
