@@ -1,6 +1,7 @@
 package glogger
 
 import (
+    "fmt"
     "github.com/toniz/gosuit/glog/ethereum/glog"
     l "github.com/toniz/gosuit/glog"
 )
@@ -90,7 +91,6 @@ func (g *glogger) Exitf(format string, args ...interface{}) {
 func (g *glogger) ExitDepth(depth int, args ...interface{}) {
     glog.ExitDepth(depth+2, args...)
 }
-
 
 func (*LogV2) V(level int) l.Verboser {
     return glog.V(glog.Level(level))
