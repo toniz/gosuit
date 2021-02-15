@@ -92,7 +92,7 @@ func (g *glogger) ExitDepth(depth int, args ...interface{}) {
     glog.ExitDepth(depth+2, args...)
 }
 
-func (*LogV2) V(level int) l.Verboser {
+func (g *glogger) V(level int) l.Verboser {
     return glog.V(glog.Level(level))
 }
 
