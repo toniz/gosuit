@@ -9,19 +9,25 @@ type TLogger interface {
     Info(args ...interface{})
     Infoln(args ...interface{})
     Infof(format string, args ...interface{})
+    InfoDepth(depth int, args ...interface{})
     Warning(args ...interface{})
     Warningln(args ...interface{})
     Warningf(format string, args ...interface{})
+    WarningDepth(depth int, args ...interface{})
     Error(args ...interface{})
     Errorln(args ...interface{})
     Errorf(format string, args ...interface{})
+    ErrorDepth(depth int, args ...interface{})
     Fatal(args ...interface{})
     Fatalln(args ...interface{})
     Fatalf(format string, args ...interface{})
+    FatalDepth(depth int, args ...interface{})
     Exit(args ...interface{})
     Exitln(args ...interface{})
     Exitf(format string, args ...interface{})
+    ExitDepth(depth int, args ...interface{})
     Flush()
+    CopyStandardLogTo(name string)
 }
 
 type Verboser interface {
@@ -138,6 +144,10 @@ func Exitln(args ...interface{}) {
     logger.Exitln(args...)
     // Make sure fatal logs will exit.
     os.Exit(1)
+}
+
+func CopyStandardLogTo(name string) {
+    logger.CopyStandardLogTo(name)
 }
 
 

@@ -5,80 +5,103 @@ import (
     l "github.com/toniz/gosuit/glog"
 )
 
-type LogV2 struct {
-}
+type glogger struct{}
 
 func init() {
-    lv2 := &LogV2{}
-    l.SetLogger(lv2)
+    l.SetLogger(&glogger{})
 }
 
-func (*LogV2)Info(args ...interface{}) {
-    glog.Info(args)
+func (g *glogger) Info(args ...interface{}) {
+    glog.InfoDepth(2, args...)
 }
 
-func (*LogV2) Infoln(args ...interface{}){
-    glog.Infoln(args)
+func (g *glogger) Infoln(args ...interface{}) {
+    glog.InfoDepth(2, fmt.Sprintln(args...))
 }
 
-func (*LogV2) Infof(format string, args ...interface{}){
-    glog.Infof(format, args)
+func (g *glogger) Infof(format string, args ...interface{}) {
+    glog.InfoDepth(2, fmt.Sprintf(format, args...))
 }
 
-func (*LogV2) Warning(args ...interface{}){
-    glog.Warning(args)
+func (g *glogger) InfoDepth(depth int, args ...interface{}) {
+    glog.InfoDepth(depth+2, args...)
 }
 
-func (*LogV2) Warningln(args ...interface{}){
-    glog.Warningln(args)
+func (g *glogger) Warning(args ...interface{}) {
+    glog.WarningDepth(2, args...)
 }
 
-func (*LogV2) Warningf(format string, args ...interface{}){
-    glog.Warningf(format, args)
+func (g *glogger) Warningln(args ...interface{}) {
+    glog.WarningDepth(2, fmt.Sprintln(args...))
 }
 
-func (*LogV2) Error(args ...interface{}){
-    glog.Error(args)
+func (g *glogger) Warningf(format string, args ...interface{}) {
+    glog.WarningDepth(2, fmt.Sprintf(format, args...))
 }
 
-func (*LogV2) Errorln(args ...interface{}){
-    glog.Errorln(args)
+func (g *glogger) WarningDepth(depth int, args ...interface{}) {
+    glog.WarningDepth(depth+2, args...)
 }
 
-func (*LogV2) Errorf(format string, args ...interface{}){
-    glog.Errorf(format, args)
+func (g *glogger) Error(args ...interface{}) {
+    glog.ErrorDepth(2, args...)
 }
 
-func (*LogV2) Fatal(args ...interface{}){
-    glog.Fatal(args)
+func (g *glogger) Errorln(args ...interface{}) {
+    glog.ErrorDepth(2, fmt.Sprintln(args...))
 }
 
-func (*LogV2) Fatalln(args ...interface{}){
-    glog.Fatalln(args)
+func (g *glogger) Errorf(format string, args ...interface{}) {
+    glog.ErrorDepth(2, fmt.Sprintf(format, args...))
 }
 
-func (*LogV2) Fatalf(format string, args ...interface{}){
-    glog.Fatalf(format, args)
+func (g *glogger) ErrorDepth(depth int, args ...interface{}) {
+    glog.ErrorDepth(depth+2, args...)
 }
 
-func (*LogV2) Exit(args ...interface{}){
-    glog.Exit(args)
+func (g *glogger) Fatal(args ...interface{}) {
+    glog.FatalDepth(2, args...)
 }
 
-func (*LogV2) Exitln(args ...interface{}){
-    glog.Exitln(args)
+func (g *glogger) Fatalln(args ...interface{}) {
+    glog.FatalDepth(2, fmt.Sprintln(args...))
 }
 
-func (*LogV2) Exitf(format string, args ...interface{}){
-    glog.Exitf(format, args)
+func (g *glogger) Fatalf(format string, args ...interface{}) {
+    glog.FatalDepth(2, fmt.Sprintf(format, args...))
 }
+
+func (g *glogger) FatalDepth(depth int, args ...interface{}) {
+    glog.FatalDepth(depth+2, args...)
+}
+
+func (g *glogger) Exit(args ...interface{}) {
+    glog.ExitDepth(2, args...)
+}
+
+func (g *glogger) Exitln(args ...interface{}) {
+    glog.ExitDepth(2, fmt.Sprintln(args...))
+}
+
+func (g *glogger) Exitf(format string, args ...interface{}) {
+    glog.ExitDepth(2, fmt.Sprintf(format, args...))
+}
+
+func (g *glogger) ExitDepth(depth int, args ...interface{}) {
+    glog.ExitDepth(depth+2, args...)
+}
+
 
 func (*LogV2) V(level int) l.Verboser {
     return glog.V(glog.Level(level))
 }
 
-func (*LogV2) Flush() {
+func (g *glogger) Flush() {
     glog.Flush()
+}
+
+func (g *glogger) CopyStandardLogTo(name string) {
+    glog.CopyStandardLogTo(name)
 }
 
 
