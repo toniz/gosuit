@@ -23,8 +23,13 @@ func init() {
 }
 
 // Create Sms Client Handler
-func (c *AliSms) Connect(regionId string, accessKeyId string, accessKeySecret string) error {
+func (c *AliSms) Connect(accessKeyId string, accessKeySecret string, other ...string) error {
 	var errSms error
+    if len(other) != 1 {
+        errors.New(fmt.Sprintf("regionId Is Missing!"))
+    }
+    regionId := other[0]
+
     c.client, errSms = dysmsapi.NewClientWithAccessKey(regionId, accessKeyId, accessKeySecret)
 	return errSms
 }

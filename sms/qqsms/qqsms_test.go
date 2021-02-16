@@ -29,7 +29,7 @@ var _ = Describe("Qqsms", func() {
 	Describe("Test TencentYun Sms Request", func() {
 		Context("When Get New Sms Client", func() {
 			It("Should Return *QQsms", func() {
-				s = NewSms(key, id, "", "")
+				s = Connect(key, id, "", "")
 				Expect(s.AppKey).To(Equal(key))
 				Expect(s.AppID).To(Equal(id))
 			})

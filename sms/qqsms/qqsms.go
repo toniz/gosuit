@@ -35,6 +35,9 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+    "errors"
+
+    "github.com/toniz/gosuit/sms"
 )
 
 type Tel struct {
@@ -59,22 +62,24 @@ type QQSms struct {
 	request QQSmsRequest
 }
 
-// Set The Ailyun SMS Service AccessKey
-func NewSms(key, id, sign, nation string) *QQSms {
-	var req QQSmsRequest
-	s := QQSms{key, id, req}
-	if len(sign) == 0 {
-		sign = "[XXX]"
-	}
+func init() {
+    sms.Register("qqsms", func() sms.SmsAgent {
+        return &QQSms{}
+    })
+}
 
-	if len(nation) == 0 {
-		nation = "86"
-	}
+// Create Sms Client Handler
+func (s *QQSms) Connect(accessKeyId string, accessKeySecret string, other ...string) error {
+    if len(other) != 2 {
+        return errors.New(fmt.Sprintf("Error: Sign Or Nation Missing"))
+    }
 
-	s.request.Sign = sign
-	s.request.Tel.Nationcode = nation
+    s.AppID = accessKeyId
+    s.AppKey = accessKeySecret
+	s.request.Sign = other[0]
+	s.request.Tel.Nationcode = other[1]
 
-	return &s
+    return OK
 }
 
 // SendSms: Send SMS Message Using Aliyun SMS Services.
