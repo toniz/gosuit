@@ -30,12 +30,12 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"ibbwhat.com/util/randstr"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
     "errors"
+    "math/rand"
 
     "github.com/toniz/gosuit/sms"
 )
@@ -63,9 +63,19 @@ type QQSms struct {
 }
 
 func init() {
+    rand.Seed(time.Now().UnixNano())
     sms.Register("qqsms", func() sms.SmsAgent {
         return &QQSms{}
     })
+}
+
+var numbers = []rune("0123456789")
+func RandNum(n int) string {
+    b := make([]rune, n)
+    for i := range b {
+        b[i] = numbers[rand.Intn(len(numbers))]
+    }
+    return string(b)
 }
 
 // Create Sms Client Handler
@@ -100,7 +110,7 @@ func (s *QQSms) SendSms(phone string, content []string, tpl int) (string, error)
 	s.request.Tpl_id = tpl
 	s.request.Time = time.Now().Unix()
 
-	rstr := randstr.RandNum(12)
+	rstr := RandNum(12)
 	url := "https://yun.tim.qq.com/v5/tlssmssvr/sendsms?sdkappid=" + s.AppID + "&random=" + rstr
 	s.request.Sig = s.BuildSigStr(rstr, phone, strconv.FormatInt(s.request.Time, 10), s.AppKey)
 
