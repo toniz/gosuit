@@ -10,7 +10,7 @@ import (
 )
 
 type SmsAgent interface {
-    Connect(accessKeyID string, secretAccessKey string, other ...string) error
+    Connect(accessKeyID string, secretAccessKey string, param map[string]string) error
     SendSms(phone string, sign string, templateCode string, templateParam string) (string, string, error)
 }
 

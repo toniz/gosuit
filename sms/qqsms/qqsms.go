@@ -69,15 +69,26 @@ func init() {
 }
 
 // Create Sms Client Handler
-func (s *QQSms) Connect(accessKeyId string, accessKeySecret string, other ...string) error {
-    if len(other) != 2 {
-        return errors.New(fmt.Sprintf("Error: Sign Or Nation Missing"))
+func (s *QQSms) Connect(accessKeyId string, accessKeySecret string, params map[string]string) error {
+
+    if len(params) == 0 {
+        return errors.New(fmt.Sprintf("Params Missing!"))
+    }
+
+    var sign string
+    if len(params["sign"]) == 0 {
+        sign = "[XXX]"
+    }
+
+    var nation string
+    if len(params["nation"]) == 0 {
+        nation = "86"
     }
 
     s.AppID = accessKeyId
     s.AppKey = accessKeySecret
-	s.request.Sign = other[0]
-	s.request.Tel.Nationcode = other[1]
+	s.request.Sign = sign
+	s.request.Tel.Nationcode = nation
 
     return OK
 }
