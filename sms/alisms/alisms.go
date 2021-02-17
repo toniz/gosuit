@@ -34,13 +34,13 @@ func (c *AliSms) Connect(accessKeyId string, accessKeySecret string, params map[
 }
 
 // Send Sms 
-func (c *AliSms) SendSms(phone string, sign string, templateCode string, templateParam string) (string, string, error) {
+func (c *AliSms) SendSms(content map[string]string) (string, string, error) {
     request := dysmsapi.CreateSendSmsRequest()
     request.Scheme = "https"
-    request.PhoneNumbers = phone
-    request.SignName = sign
-    request.TemplateCode = templateCode
-    request.TemplateParam = templateParam
+    request.PhoneNumbers = content["phone"]
+    request.SignName = content["sign"]
+    request.TemplateCode = content["template"]
+    request.TemplateParam = content["param"]
 
     strResponse := ""
     strRequest := fmt.Sprintln(request)
@@ -54,5 +54,4 @@ func (c *AliSms) SendSms(phone string, sign string, templateCode string, templat
 
     return strRequest, strResponse, errSms
 }
-
 

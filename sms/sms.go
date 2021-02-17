@@ -11,7 +11,7 @@ import (
 
 type SmsAgent interface {
     Connect(accessKeyID string, secretAccessKey string, param map[string]string) error
-    SendSms(phone string, sign string, templateCode string, templateParam string) (string, string, error)
+    SendSms(content map[string]string) (string, string, error)
 }
 
 var (
