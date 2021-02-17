@@ -14,13 +14,13 @@ import (
     "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
     "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
     "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
-    sms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20190711"
+    qqsms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20190711"
 
     "github.com/toniz/gosuit/sms"
 )
 
 type QQSms struct {
-    client *sms.Client
+    client *qqsms.Client
 }
 
 func init() {
@@ -37,13 +37,13 @@ func (s *QQSms) Connect(accessKeyId string, accessKeySecret string, params map[s
         accessKeySecret,
     )
     cpf := profile.NewClientProfile()
-    s.client, err = sms.NewClient(credential, "ap-guangzhou", cpf)
+    s.client, err = qqsms.NewClient(credential, "ap-guangzhou", cpf)
     return err
 }
 
 // SendSms: Send SMS Message Using Tencent SMS Services.
 func (s *QQSms) SendSms(content map[string]string) (string, error) {
-    request := sms.NewSendSmsRequest()
+    request := qqsms.NewSendSmsRequest()
     /* 短信应用ID: 短信SdkAppid在 [短信控制台] 添加应用后生成的实际SdkAppid，示例如1400006666 */
     request.SmsSdkAppid = common.StringPtr(content["appid"])
     /* 短信签名内容: 使用 UTF-8 编码，必须填写已审核通过的签名，签名信息可登录 [短信控制台] 查看 */
