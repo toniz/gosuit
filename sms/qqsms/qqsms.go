@@ -11,6 +11,7 @@ import (
     "encoding/json"
     "fmt"
     "strings"
+    "errors"
 
     "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
     "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
