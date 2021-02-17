@@ -10,9 +10,9 @@ package qqsms
 import (
     "encoding/json"
     "fmt"
+    "strings"
 
     "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
-    "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
     "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
     qqsms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20190711"
 
@@ -42,7 +42,7 @@ func (s *QQSms) Connect(accessKeyId string, accessKeySecret string, params map[s
 }
 
 // SendSms: Send SMS Message Using Tencent SMS Services.
-func (s *QQSms) SendSms(content map[string]string) (string, error) {
+func (s *QQSms) SendSms(content map[string]string) (string, string, error) {
     request := qqsms.NewSendSmsRequest()
     /* 短信应用ID: 短信SdkAppid在 [短信控制台] 添加应用后生成的实际SdkAppid，示例如1400006666 */
     request.SmsSdkAppid = common.StringPtr(content["appid"])
@@ -59,7 +59,7 @@ func (s *QQSms) SendSms(content map[string]string) (string, error) {
     /* 下发手机号码，采用 e.164 标准，+[国家或地区码][手机号]
      * 示例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号，最多不要超过200个手机号*/
     if len(content["phone"]) == 0 {
-        return errors.New(fmt.Sprintf("Content Phone Not Exists"))
+        return "", "", errors.New(fmt.Sprintf("Content Phone Not Exists"))
     }
     phoneList := strings.Split(content["phone"],",")
     for i:=0; i<len(phoneList); i++ {
@@ -73,7 +73,7 @@ func (s *QQSms) SendSms(content map[string]string) (string, error) {
     } else {
         var paramSet []string
         if jsonErr := json.Unmarshal([]byte(content["param"]), &paramSet); jsonErr != nil {
-            return errors.New(fmt.Sprintf("ParamSet Parse Json Failed"))
+            return "", "", errors.New(fmt.Sprintf("ParamSet Parse Json Failed"))
         }
         request.TemplateParamSet = common.StringPtrs(paramSet)
     }
@@ -83,7 +83,8 @@ func (s *QQSms) SendSms(content map[string]string) (string, error) {
     strResponse := ""
     response, err := s.client.SendSms(request)
     if err == nil {
-        strResponse, _ = json.Marshal(response.Response)
+        res, _ := json.Marshal(response.Response)
+        strResponse = string(res)
     }
 
     return strRequest, strResponse, err
