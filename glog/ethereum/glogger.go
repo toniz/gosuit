@@ -10,6 +10,13 @@ type glogger struct{}
 
 func init() {
     l.SetLogger(&glogger{})
+
+//    interval, logErr := glog.ParseInterval("daily")
+//    if logErr == nil {
+//        glog.RotationInterval = interval
+//    }
+//    glog.Compress = true
+//    glog.MaxSize = 1024 * 1024 * 1800
 }
 
 func (g *glogger) Info(args ...interface{}) {
